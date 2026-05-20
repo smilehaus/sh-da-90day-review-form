@@ -193,6 +193,25 @@ body.form-locked .skill-delete-btn { display: none; }
 /* Dividers */
 .section-divider { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--earth); padding: 8px 0 6px; border-bottom: 1px solid var(--sandstone); margin-bottom: 14px; }
 
+/* Score summary card */
+.score-summary-card {
+  background: var(--onyx); color: var(--white); border-radius: var(--radius);
+  padding: 18px 24px; margin-bottom: 20px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr 1.4fr; gap: 16px; align-items: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+}
+.sum-block { text-align: center; }
+.sum-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; margin-bottom: 2px; }
+.sum-value { font-size: 22px; font-weight: 600; font-family: var(--font-head); line-height: 1; }
+.sum-value.highlight { color: var(--taupe); }
+.band-block { text-align: right; }
+.band-name { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+.band-score { font-size: 28px; font-weight: 700; font-family: var(--font-head); line-height: 1; }
+.band-sub { font-size: 12px; opacity: 0.5; margin-top: 3px; }
+.band-pip { color: #e87770; } .band-coaching { color: #e8c170; }
+.band-meets { color: #a8c470; } .band-exceeds { color: #70c4b8; } .band-outstanding { color: #c4a070; }
+@media (max-width: 640px) { .score-summary-card { grid-template-columns: 1fr 1fr; } .band-block { grid-column: 1/-1; text-align: center; } }
+
 /* Assessment */
 .assessment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
 .recommendation-options { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
@@ -268,7 +287,7 @@ body.form-locked .skill-delete-btn { display: none; }
             <option>New Braunfels Dental Arts</option><option>Anderson Mill</option>
           </select>
         </div>
-        <div><label class="field-label">Current Hourly Rate ($)</label><input type="number" id="currentRate" placeholder="e.g. 17.00" step="0.25" min="14" max="35"></div>
+        <div><label class="field-label">Current Hourly Rate ($)</label><input type="number" id="currentRate" placeholder="e.g. 17.00" step="0.25" min="14" max="35" oninput="onRateChange()"></div>
         <div>
           <label class="field-label">Current Tier <span id="tierAutoLabel" style="font-size:10px;font-weight:400;color:var(--taupe);text-transform:none;letter-spacing:0;margin-left:4px;"></span></label>
           <select id="currentTier" onchange="onTierChange()">
@@ -333,6 +352,27 @@ body.form-locked .skill-delete-btn { display: none; }
     </div>
   </div>
 
+  <!-- Score Summary -->
+  <div class="score-summary-card">
+    <div class="sum-block">
+      <div class="sum-label">Part I — KPIs</div>
+      <div class="sum-value"><span id="sumP1">0</span><span style="font-size:12px;opacity:0.4"> / <span id="sumP1Max">45</span></span></div>
+    </div>
+    <div class="sum-block">
+      <div class="sum-label">Part II — Performance</div>
+      <div class="sum-value"><span id="sumP2">0</span><span style="font-size:12px;opacity:0.4"> / 30</span></div>
+    </div>
+    <div class="sum-block">
+      <div class="sum-label">Combined Score</div>
+      <div class="sum-value highlight"><span id="sumTotal">0</span><span style="font-size:12px;opacity:0.4"> / <span id="sumTotalMax">75</span></span></div>
+    </div>
+    <div class="band-block">
+      <div class="band-name" id="bandName" style="opacity:0.35;">Fill in scores above</div>
+      <div class="band-score" id="bandScore">—</div>
+      <div class="band-sub">out of 75 points</div>
+    </div>
+  </div>
+
   <!-- Feedback & Development -->
   <div class="card">
     <div class="card-header"><h2>Feedback &amp; Development</h2></div>
@@ -349,6 +389,10 @@ body.form-locked .skill-delete-btn { display: none; }
         <div class="narrative-field narrative-full">
           <label class="field-label">90-Day Goals &amp; Action Plan</label>
           <textarea id="goals" placeholder="List 2–4 specific, measurable goals for the next phase of their development."></textarea>
+        </div>
+        <div class="narrative-field narrative-full">
+          <label class="field-label">Employee Response / Comments</label>
+          <textarea id="employeeComments" placeholder="Space for the DA to add their own perspective, reactions, or acknowledgment after the review meeting."></textarea>
         </div>
       </div>
     </div>
@@ -863,6 +907,16 @@ function toggleTier(key) {
 
 // ─── CALCULATION ─────────────────────────────────────────────────────────────
 
+function getBand(score, maxScore) {
+  if (!maxScore) return { label: '—', cls: '' };
+  const pct = score / maxScore;
+  if (pct < 0.50) return { label: 'Does Not Meet',       cls: 'band-pip' };
+  if (pct < 0.70) return { label: 'Coaching Plan',        cls: 'band-coaching' };
+  if (pct < 0.85) return { label: 'Meets Expectations',   cls: 'band-meets' };
+  if (pct < 0.95) return { label: 'Exceeds Expectations', cls: 'band-exceeds' };
+  return            { label: 'Outstanding',               cls: 'band-outstanding' };
+}
+
 function getSkillIndices(tierKey) {
   const body = document.getElementById(`tierBody_${tierKey}`);
   if (!body) return TIER_SKILLS[tierKey].map((_, i) => i);
@@ -906,6 +960,31 @@ function recalc() {
   document.getElementById('kpiDenom').textContent = p1Max;
   document.getElementById('p1Header').textContent = `/ ${p1Max} pts`;
   document.getElementById('p2Subtotal').textContent = p2;
+
+  // Score Summary Card
+  const total    = p1 + p2;
+  const totalMax = p1Max + 30;
+  document.getElementById('sumP1').textContent      = p1;
+  document.getElementById('sumP1Max').textContent   = p1Max;
+  document.getElementById('sumP2').textContent      = p2;
+  document.getElementById('sumTotal').textContent   = total;
+  document.getElementById('sumTotalMax').textContent = totalMax;
+  const bandNameEl  = document.getElementById('bandName');
+  const bandScoreEl = document.getElementById('bandScore');
+  if (total > 0) {
+    const band = getBand(total, totalMax);
+    bandNameEl.className  = 'band-name ' + band.cls;
+    bandNameEl.style.opacity = '';
+    bandNameEl.textContent = band.label;
+    bandScoreEl.className  = 'band-score ' + band.cls;
+    bandScoreEl.textContent = total;
+  } else {
+    bandNameEl.className  = 'band-name';
+    bandNameEl.style.opacity = '0.35';
+    bandNameEl.textContent = 'Fill in scores above';
+    bandScoreEl.className  = 'band-score';
+    bandScoreEl.textContent = '—';
+  }
 
   // Gate logic
   const tierKey = document.getElementById('currentTier').value;
@@ -1040,6 +1119,34 @@ function onTierChange() {
   saveFormState();
 }
 
+function rateToTier(rate) {
+  const tiers = getActiveTiers();
+  for (const k of ['T1','T2','T3','T4','T5','T6','T7']) {
+    const t = tiers[k];
+    if (rate >= t.floor && rate <= t.ceiling) return k;
+  }
+  return null;
+}
+
+function onRateChange() {
+  const rate    = parseFloat(document.getElementById('currentRate').value);
+  const labelEl = document.getElementById('tierAutoLabel');
+  if (!rate) { if (labelEl) labelEl.textContent = ''; return; }
+  const tierKey = rateToTier(rate);
+  const tierSel = document.getElementById('currentTier');
+  if (tierKey && tierSel.value !== tierKey) {
+    tierSel.value = tierKey;
+    if (labelEl) labelEl.textContent = '(auto-detected)';
+    recalc();
+  } else if (!tierKey) {
+    if (labelEl) labelEl.textContent = '(rate out of range)';
+  } else {
+    if (labelEl) labelEl.textContent = '';
+  }
+  onOverrideChange();
+  saveFormState();
+}
+
 // ─── SUBMIT ───────────────────────────────────────────────────────────────────
 
 async function downloadPreviewPDF() {
@@ -1096,7 +1203,10 @@ async function handleSubmit() {
 
     const formState = { _scores: {...scores}, _skillState: {...skillState}, _dynamicSkills: {} };
     document.querySelectorAll('.main [id], .submit-section [id]').forEach(el => {
-      if ((el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') && el.id && el.id !== 'pinInput') formState[el.id] = el.value;
+      if ((el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') && el.id && el.id !== 'pinInput') {
+        if (el.type === 'checkbox') formState[el.id] = el.checked;
+        else formState[el.id] = el.value;
+      }
     });
     document.querySelectorAll('[data-editable][id]').forEach(el => { formState[el.id] = el.textContent; });
     const recEl = document.querySelector('input[name="recommendation"]:checked');
@@ -1362,7 +1472,10 @@ async function saveDraft() {
 
   const state = { _scores: {...scores}, _skillState: {...skillState}, _dynamicSkills: {} };
   document.querySelectorAll('.main [id], .submit-section [id]').forEach(el => {
-    if ((el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') && el.id && el.id !== 'pinInput') state[el.id] = el.value;
+    if ((el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') && el.id && el.id !== 'pinInput') {
+      if (el.type === 'checkbox') state[el.id] = el.checked;
+      else state[el.id] = el.value;
+    }
   });
   document.querySelectorAll('[data-editable][id]').forEach(el => { state[el.id] = el.textContent; });
   const recEl = document.querySelector('input[name="recommendation"]:checked');
@@ -1549,7 +1662,10 @@ function saveFormState() {
   _saveTimer = setTimeout(() => {
     const state = { _scores: {...scores}, _skillState: {...skillState}, _dynamicSkills: {} };
     document.querySelectorAll('.main [id], .submit-section [id]').forEach(el => {
-      if ((el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') && el.id && el.id !== 'pinInput') state[el.id] = el.value;
+      if ((el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') && el.id && el.id !== 'pinInput') {
+        if (el.type === 'checkbox') state[el.id] = el.checked;
+        else state[el.id] = el.value;
+      }
     });
     document.querySelectorAll('[data-editable][id]').forEach(el => { state[el.id] = el.textContent; });
     const recEl = document.querySelector('input[name="recommendation"]:checked');
@@ -1571,7 +1687,10 @@ function saveFormState() {
 function restoreStateObj(state) {
   Object.keys(state).filter(k => !k.startsWith('_')).forEach(id => {
     const el = document.getElementById(id);
-    if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA')) el.value = state[id];
+    if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA')) {
+      if (el.type === 'checkbox') el.checked = state[id] === true || state[id] === 'true';
+      else el.value = state[id] != null ? state[id] : '';
+    }
   });
   document.querySelectorAll('[data-editable][id]').forEach(el => {
     if (state[el.id] !== undefined) el.textContent = state[el.id];
@@ -1610,13 +1729,15 @@ function restoreStateObj(state) {
     if (radio) { radio.checked = true; radio.closest('.rec-option')?.classList.add('selected'); }
   }
   // Restore override
-  const ov = state._override || null;
-  if (!ov) { // try inferring from fields
-    if (state['overrideCheck'] === 'true' || document.getElementById('overrideCheck')?.checked) {
-      document.getElementById('overrideBody')?.classList.add('open');
-      document.getElementById('overrideBadge').textContent = 'Active';
-      document.getElementById('overrideBadge').style.color = '#e87770';
-    }
+  const ocEl = document.getElementById('overrideCheck');
+  const ocActive = state['overrideCheck'] === true || state['overrideCheck'] === 'true' || ocEl?.checked;
+  if (ocActive) {
+    if (ocEl) ocEl.checked = true;
+    document.getElementById('overrideBody')?.classList.add('open');
+    const badgeEl = document.getElementById('overrideBadge');
+    if (badgeEl) { badgeEl.textContent = 'Active'; badgeEl.style.color = '#e87770'; }
+    const box = document.getElementById('overrideBox');
+    if (box) box.style.borderColor = '#e87770';
   }
 }
 
