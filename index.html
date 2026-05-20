@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DA 90-Day Review — Smile Haus</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --onyx: #1a1a2e; --alabaster: #F2EFE8; --sandstone: #D6CDBD;
+  --taupe: #877765; --earth: #877765; --teal: #4ecdc4; --white: #FFFFFF; --radius: 12px;
+  --font-head: 'Cormorant Garamond', serif; --font-body: 'Jost', sans-serif;
+}
+body { font-family: var(--font-body); background: var(--alabaster); color: var(--onyx); font-size: 15px; line-height: 1.5; }
+
+/* Header */
+.site-header { background: var(--onyx); padding: 18px 40px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.site-header img { height: 36px; flex-shrink: 0; }
+.site-header h1 { font-family: var(--font-head); color: var(--white); font-weight: 300; font-size: 22px; letter-spacing: 0.04em; flex: 1; text-align: center; }
+.header-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: var(--white); border-radius: 7px; padding: 6px 13px; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; white-space: nowrap; text-decoration: none; display: inline-flex; align-items: center; transition: background 0.15s; }
+.header-btn:hover { background: rgba(255,255,255,0.12); }
+.reset-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.7); border-radius: 7px; padding: 6px 13px; cursor: pointer; font-family: var(--font-body); font-size: 13px; white-space: nowrap; transition: all 0.15s; }
+.reset-btn:hover { border-color: #ff8a80; color: #ff8a80; }
+
+/* Main */
+.main { max-width: 960px; margin: 0 auto; padding: 28px 24px 80px; }
+
+/* Cards */
+.card { background: var(--white); border: 1px solid var(--sandstone); border-radius: var(--radius); margin-bottom: 20px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.card-header { background: var(--onyx); color: var(--white); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
+.card-header h2 { font-family: var(--font-head); font-weight: 300; font-size: 19px; letter-spacing: 0.03em; }
+.card-header .pts { font-size: 12px; opacity: 0.55; }
+.card-body { padding: 20px; }
+
+/* Info grid */
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+label.field-label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--earth); margin-bottom: 4px; }
+input[type=text], input[type=date], select, textarea {
+  width: 100%; padding: 9px 12px; border: 1px solid var(--sandstone); border-radius: 8px;
+  font-family: var(--font-body); font-size: 14px; background: var(--white); color: var(--onyx);
+}
+textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--taupe); border-color: transparent; }
+
+/* Score summary sticky bar */
+.score-summary {
+  position: sticky; top: 10px; z-index: 10;
+  background: var(--onyx); color: var(--white); border-radius: var(--radius);
+  padding: 14px 24px; margin-bottom: 20px;
+  display: grid; grid-template-columns: 1fr 2fr; gap: 16px; align-items: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+}
+.sum-block { text-align: center; }
+.sum-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; margin-bottom: 2px; }
+.sum-value { font-size: 28px; font-weight: 700; font-family: var(--font-head); line-height: 1; }
+.band-block { text-align: right; }
+.band-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.band-desc { font-size: 12px; opacity: 0.6; }
+
+/* Tier section */
+.tier-section-title { font-size: 14px; font-weight: 600; color: var(--onyx); margin-bottom: 4px; }
+.tier-section-sub { font-size: 12px; color: var(--taupe); margin-bottom: 14px; }
+
+/* Skill rows for Section 1 (3-radio) */
+.skill-eval-row { display: flex; align-items: flex-start; gap: 14px; padding: 10px 16px; border-bottom: 1px solid #f0ece4; }
+.skill-eval-row:last-child { border-bottom: none; }
+.skill-eval-row:nth-child(even) { background: #fafaf8; }
+.skill-eval-text { flex: 1; font-size: 13px; color: var(--onyx); line-height: 1.4; padding-top: 2px; }
+.skill-radio-group { display: flex; gap: 6px; flex-shrink: 0; }
+.skill-radio-btn {
+  padding: 4px 10px; border: 1.5px solid var(--sandstone); border-radius: 6px;
+  cursor: pointer; font-family: var(--font-body); font-size: 12px; font-weight: 600;
+  background: var(--white); color: var(--onyx); transition: all 0.12s; white-space: nowrap;
+}
+.skill-radio-btn:hover { border-color: var(--taupe); }
+.skill-radio-btn.achieved { background: #d4edda; border-color: #2d6a3f; color: #2d6a3f; }
+.skill-radio-btn.progressing { background: #fff3cd; border-color: #c8860a; color: #c8860a; }
+.skill-radio-btn.not-yet { background: #fde8e8; border-color: #c0392b; color: #c0392b; }
+
+/* Goals checklist (Section 2) */
+.goal-check-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #f0ece4; }
+.goal-check-row:last-child { border-bottom: none; }
+.goal-check-row:nth-child(even) { background: #fafaf8; }
+.goal-check-row input[type=checkbox] { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--taupe); flex-shrink: 0; cursor: pointer; }
+.goal-check-text { font-size: 13px; color: var(--onyx); line-height: 1.4; }
+
+/* Score section (Section 3) */
+.perf-row { display: flex; align-items: center; gap: 14px; padding: 11px 16px; border-bottom: 1px solid #f0ece4; }
+.perf-row:last-child { border-bottom: none; }
+.perf-row:nth-child(even) { background: #fafaf8; }
+.perf-cat { flex: 1; font-size: 14px; font-weight: 500; color: var(--onyx); }
+.perf-score-ctl { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.score-dec, .score-inc {
+  width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--sandstone);
+  background: var(--white); cursor: pointer; font-size: 18px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; line-height: 1;
+  color: var(--taupe); transition: all 0.12s; flex-shrink: 0;
+}
+.score-dec:hover, .score-inc:hover { border-color: var(--taupe); background: var(--alabaster); }
+.score-dec.active, .score-inc.active { background: var(--teal); border-color: var(--teal); color: var(--white); }
+.score-val { font-size: 20px; font-weight: 700; width: 30px; text-align: center; font-family: var(--font-head); }
+.score-val.nonzero { color: var(--teal); }
+.score-max { font-size: 12px; color: var(--taupe); opacity: 0.7; }
+
+/* Total bar */
+.score-total-bar { background: var(--alabaster); border-top: 1px solid var(--sandstone); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+.score-total-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--taupe); }
+.score-total-val { font-size: 20px; font-weight: 700; font-family: var(--font-head); }
+.band-chip { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-left: 12px; }
+.band-needs  { background: #fde8e8; color: #8a3a3a; }
+.band-below  { background: #fff3cd; color: #7a5800; }
+.band-meets  { background: #d4edda; color: #2d6a3f; }
+.band-exceeds { background: #cce8ff; color: #1a5a8a; }
+.band-outstanding { background: #f0e6ff; color: #5a2d8a; }
+
+/* Assessment */
+.assess-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: end; }
+.advance-check-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--alabaster); border: 1px solid var(--sandstone); border-radius: 8px; margin-top: 10px; }
+.advance-check-row input[type=checkbox] { width: 17px; height: 17px; accent-color: var(--taupe); cursor: pointer; }
+.advance-check-row label { font-size: 13px; font-weight: 600; cursor: pointer; }
+
+/* Signature */
+.sig-input { border: none; border-bottom: 1.5px solid var(--sandstone); border-radius: 0; background: transparent; font-size: 14px; padding: 8px 0; }
+
+/* Submit section */
+.submit-section { background: var(--white); border: 1px solid var(--sandstone); border-radius: var(--radius); padding: 24px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.submit-section h2 { font-family: var(--font-head); font-weight: 400; font-size: 20px; margin-bottom: 18px; }
+.submit-btn { background: var(--taupe); color: var(--white); border: none; border-radius: 8px; padding: 14px 32px; font-family: var(--font-body); font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; letter-spacing: 0.03em; transition: background 0.2s; margin-top: 8px; }
+.submit-btn:hover { background: var(--onyx); }
+.submit-btn:disabled { background: var(--sandstone); cursor: not-allowed; }
+.draft-btn { background: none; border: 1px solid #c8b89a; color: #5a4a2a; border-radius: 8px; padding: 9px 20px; font-family: var(--font-body); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.draft-btn:hover { background: #f5f0e8; }
+.draft-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Section divider */
+.section-divider { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--earth); padding: 8px 0 6px; border-bottom: 1px solid var(--sandstone); margin-bottom: 14px; }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--onyx); color: var(--white); padding: 14px 20px; border-radius: 10px; font-size: 14px; z-index: 200; opacity: 0; transform: translateY(10px); transition: all 0.3s; max-width: 380px; }
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { background: #3a7a4a; }
+.toast.error { background: #8a3a3a; }
+
+/* Modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal { background: var(--white); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 420px; }
+.modal h3 { font-family: var(--font-head); font-weight: 400; font-size: 20px; margin-bottom: 10px; }
+.modal p { font-size: 14px; color: var(--taupe); margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 10px; justify-content: center; }
+.btn-cancel { background: none; border: 1px solid var(--sandstone); padding: 9px 20px; border-radius: 8px; cursor: pointer; font-family: var(--font-body); font-size: 14px; }
+.btn-danger { background: #c0392b; color: #fff; border: none; padding: 9px 22px; border-radius: 8px; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; }
+
+/* Footer */
+.site-footer { background: var(--onyx); color: rgba(255,255,255,0.35); text-align: center; padding: 18px; font-size: 12px; margin-top: 48px; }
+
+/* Mobile */
+@media (max-width: 640px) {
+  .info-grid, .assess-grid { grid-template-columns: 1fr; }
+  .score-summary { grid-template-columns: 1fr; }
+  .band-block { text-align: left; }
+  .site-header { padding: 12px 14px; }
+  .site-header h1 { font-size: 16px; }
+  .main { padding: 14px 12px 60px; }
+  .skill-radio-group { flex-direction: column; gap: 4px; }
+  .skill-radio-btn { font-size: 11px; padding: 3px 8px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <img src="../da-review-form/logo-white.png" alt="Smile Haus" onerror="this.style.display='none'">
+  <h1>Dental Assistant 90-Day Review</h1>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+    <a id="backToHomeBtn" href="https://sh-review-dashboard.pages.dev/" class="header-btn" style="display:none;">&#127968; Home</a>
+    <a id="backToRecordsBtn" href="https://sh-review-dashboard.pages.dev/records.html" class="header-btn" style="display:none;">&#8592; Records</a>
+    <button id="headerSaveDraftBtn" class="header-btn" onclick="saveDraft()" style="display:none;">&#128190; Save Draft</button>
+    <button class="reset-btn" onclick="confirmReset()">&#8635; Reset</button>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- Sticky score summary -->
+  <div class="score-summary">
+    <div class="sum-block">
+      <div class="sum-label">Performance Score</div>
+      <div class="sum-value"><span id="totalScore">0</span><span style="font-size:14px;opacity:0.4">/30</span></div>
+    </div>
+    <div class="band-block">
+      <div class="band-name" id="bandName" style="opacity:0.35;">Fill in scores below</div>
+      <div class="band-desc" id="bandDesc">Rate each category 0–5 using the buttons</div>
+    </div>
+  </div>
+
+  <!-- Employee Info -->
+  <div class="card">
+    <div class="card-header"><h2>Review Information</h2></div>
+    <div class="card-body">
+      <div class="info-grid">
+        <div><label class="field-label">DA Name</label><input type="text" id="daName" placeholder="Full name" oninput="saveFormState()"></div>
+        <div>
+          <label class="field-label">Home Office</label>
+          <select id="homeOffice" onchange="saveFormState()">
+            <option value="">— Select office —</option>
+            <option>Georgetown</option><option>On the Square</option><option>Austin</option>
+            <option>Implant Center</option><option>Medical Parkway</option><option>Arboretum</option>
+            <option>Pflugerville</option><option>South Austin</option>
+            <option>New Braunfels Dental Arts</option><option>Anderson Mill</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Current Tier</label>
+          <select id="currentTier" onchange="onTierChange()">
+            <option value="">— Select tier —</option>
+            <option value="T1">T1 — $17/hr — Entry, Just Graduated</option>
+            <option value="T2">T2 — $18–19/hr — Entry-Level Solo Assist</option>
+            <option value="T3">T3 — $19–20/hr — Crown &amp; Bridge Proficient</option>
+            <option value="T4">T4 — $21–22/hr — Advanced DA</option>
+            <option value="T5">T5 — $23–24/hr — Lead DA</option>
+            <option value="T6">T6 — $25–26/hr — Senior DA</option>
+            <option value="T7">T7 — $27+/hr — Lead Senior DA</option>
+          </select>
+        </div>
+        <div><label class="field-label">Start Date</label><input type="date" id="startDate" oninput="saveFormState()"></div>
+        <div><label class="field-label">Review Date</label><input type="date" id="reviewDate" oninput="saveFormState()"></div>
+        <div><label class="field-label">Reviewer Name</label><input type="text" id="reviewerName" placeholder="Office Manager name" oninput="saveFormState()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 1: Current Tier Competencies -->
+  <div class="card" id="section1Card">
+    <div class="card-header">
+      <h2 id="section1Title">Current Tier Requirements</h2>
+    </div>
+    <div class="card-body">
+      <p class="tier-section-sub" id="section1Sub">Select a tier above to see competency requirements.</p>
+      <div id="section1Skills">
+        <div style="text-align:center;padding:24px 0;color:var(--taupe);font-size:13px;">Select the current tier in the header section to load skills.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Next Tier Goals -->
+  <div class="card" id="section2Card">
+    <div class="card-header">
+      <h2 id="section2Title">Advancement Goals</h2>
+    </div>
+    <div class="card-body">
+      <p class="tier-section-sub" id="section2Sub">Skills the DA needs to develop to advance to the next tier.</p>
+      <div id="section2Skills">
+        <div style="text-align:center;padding:24px 0;color:var(--taupe);font-size:13px;">Select the current tier above to see advancement goals.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Performance Evaluation -->
+  <div class="card">
+    <div class="card-header">
+      <h2>90-Day Performance Evaluation</h2>
+      <span class="pts">6 categories × 5 pts = 30 pts</span>
+    </div>
+    <div style="padding:0">
+      <div id="perfBody"></div>
+      <div class="score-total-bar">
+        <span class="score-total-label">Total</span>
+        <span>
+          <span class="score-total-val" id="scoreTotalDisplay">0</span>
+          <span style="font-size:13px;color:var(--taupe);"> / 30</span>
+          <span class="band-chip band-needs" id="bandChip" style="display:none;"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Feedback & Development -->
+  <div class="card">
+    <div class="card-header"><h2>Feedback &amp; Development</h2></div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:16px;">
+      <div>
+        <label class="field-label">Strengths — What is the DA doing well?</label>
+        <textarea id="strengths" placeholder="Be specific — highlight what you've observed in their first 90 days." oninput="saveFormState()"></textarea>
+      </div>
+      <div>
+        <label class="field-label">Areas for Improvement — Be specific</label>
+        <textarea id="improvement" placeholder="Describe behaviors or skills that need development. Reference specific situations when possible." oninput="saveFormState()"></textarea>
+      </div>
+      <div>
+        <label class="field-label">90-Day Goals — 3–5 concrete, measurable goals for the next period</label>
+        <textarea id="goals90" placeholder="e.g. 1. Achieve independent iTero scans by [date]&#10;2. Master sterilization SOP with 100% audit score&#10;3. Complete coronal polishing certification" oninput="saveFormState()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Overall Assessment -->
+  <div class="card">
+    <div class="card-header"><h2>Overall Assessment &amp; Recommendation</h2></div>
+    <div class="card-body">
+      <div class="assess-grid">
+        <div>
+          <label class="field-label">Overall Assessment</label>
+          <select id="overallAssessment" onchange="onAssessmentChange()">
+            <option value="">— Select assessment —</option>
+            <option value="on_track">On Track — Meeting expectations for this stage</option>
+            <option value="needs_support">Needs Support — Falling behind; coaching plan required</option>
+            <option value="at_risk">At Risk — Performance is a concern; formal plan needed</option>
+            <option value="ready_advance">Ready to Advance — Exceeds current tier; recommend promotion</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Reviewer Signature (typed name)</label>
+          <input type="text" class="sig-input" id="reviewerSig" placeholder="Type full name to sign" style="width:100%;" oninput="saveFormState()">
+        </div>
+      </div>
+      <div class="advance-check-row" id="advanceCheckRow" style="display:none;">
+        <input type="checkbox" id="advanceCheck" onchange="saveFormState()">
+        <label for="advanceCheck" id="advanceCheckLabel">I recommend advancing this DA to the next tier</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="submit-section">
+    <h2>Submit Review</h2>
+    <p style="font-size:13px;color:var(--taupe);margin-bottom:16px;">
+      Submitting creates a ClickUp approval task and records this review in the system.
+    </p>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
+      <button class="draft-btn" id="saveDraftBtn" onclick="saveDraft()">&#128190; Save Draft</button>
+      <span id="draftSavedNote" style="font-size:12px;color:#888;display:none;"></span>
+    </div>
+    <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">Submit for Approval</button>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  Smile Haus Dental &nbsp;·&nbsp; DA 90-Day Review System &nbsp;·&nbsp; Confidential
+</footer>
+
+<!-- Reset confirmation modal -->
+<div class="modal-overlay" id="resetModal" onclick="if(event.target===this)closeResetModal()">
+  <div class="modal" style="text-align:center;">
+    <div style="font-size:36px;margin-bottom:12px;">&#9888;&#65039;</div>
+    <h3>Reset Form?</h3>
+    <p>This will clear all scores, selections, and entered data. This cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeResetModal()">Cancel</button>
+      <button class="btn-danger" onclick="resetForm()">Yes, Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONSTANTS ────────────────────────────────────────────────────────────────
+
+const WORKER_BASE = 'https://sh-da-review-worker.smilehaus.workers.dev';
+const DRAFT_ID_KEY = 'sh_da_90day_draft_id';
+const SAVE_KEY = 'sh_da_90day_form';
+
+// ─── TIER DATA ────────────────────────────────────────────────────────────────
+
+const TIERS = {
+  T1: { label: 'Entry — Just Graduated', rate: '$17/hr', next: 'T2',
+    skills: ['Willing to train full-time; accepts shadowing role', 'Able to run sterilization independently'] },
+  T2: { label: 'Entry-Level Solo Assist', rate: '$18–19/hr', next: 'T3',
+    skills: ['Able to take good-quality FMX', 'Able to chart notes, existings, and treatment in dental software', 'Able to assist solo in all exams and fillings', 'Knows all tooth numbers', 'Knows all basic instruments and dental supplies'] },
+  T3: { label: 'Crown & Bridge Proficient', rate: '$19–20/hr', next: 'T4',
+    skills: ['All T2 competencies confirmed', 'Able to assist solo in all crown and bridge procedures', 'Able to make a single temporary crown', 'Holds a coronal polishing certificate', 'Able to complete a full iTero scan in under 4 minutes'] },
+  T4: { label: 'Advanced DA', rate: '$21–22/hr', next: 'T5',
+    skills: ['All T3 competencies confirmed', 'Able to make multiple / consecutive temporary crowns', 'Able to assist root canals, surgical procedures, and implants', 'Able to present simple treatment plans', 'Able to present orthodontic / Invisalign simulation', 'Knows every instrument and supply for every procedure', 'Familiar with all medical alerts and accommodations'] },
+  T5: { label: 'Lead DA', rate: '$23–24/hr', next: 'T6',
+    skills: ['All T4 competencies confirmed', '2+ years dental assisting experience', 'Places sealants without fall-out or bite adjustments', 'Packs cord proficiently', 'Performs orthodontic procedures (attachments, IPR)', 'Performs in-office whitening', 'Runs and leads the entire back office', 'Writes accurate, detailed progress notes', 'Manages inventory', 'Cross-trained in simple front admin duties'] },
+  T6: { label: 'Senior DA', rate: '$25–26/hr', next: 'T7',
+    skills: ['All T5 competencies confirmed', 'Adjusts dentures / partials / crowns successfully', 'Handles complex FD duties (EOD, claims, billing)', 'Trains other DAs in-office or at other Smile Haus offices'] },
+  T7: { label: 'Lead Senior DA', rate: '$27+/hr', next: null,
+    skills: ['All T6 competencies confirmed', 'Performs most complex front office and back office duties'] },
+};
+
+const PERF_CATS = [
+  { id: 'clinical',       label: 'Clinical Skills & Technique' },
+  { id: 'attitude',       label: 'Attitude & Professionalism' },
+  { id: 'reliability',    label: 'Reliability & Attendance' },
+  { id: 'communication',  label: 'Team Communication & Collaboration' },
+  { id: 'sop',            label: 'SOP & Infection Control Compliance' },
+  { id: 'coachability',   label: 'Willingness to Learn & Coachability' },
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+
+const perfScores = {}; // { id: 0–5 }
+const skillStates = {}; // { 'T1_0': 'achieved'|'progressing'|'not-yet' }
+const goalChecks = {};  // { 'T2_0': true|false }
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+
+function getConfig() { return { workerUrl: WORKER_BASE + '/submit' }; }
+
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show ' + type;
+  setTimeout(() => { t.className = 'toast'; }, 5000);
+}
+
+function showDraftNote(msg) {
+  const el = document.getElementById('draftSavedNote');
+  if (el) { el.textContent = msg; el.style.display = msg ? 'inline' : 'none'; }
+}
+
+// ─── AUTH / DRAFT HELPERS ─────────────────────────────────────────────────────
+
+function getAuthJwt() {
+  const params = new URLSearchParams(window.location.search);
+  const authParam = params.get('auth');
+  if (authParam) {
+    localStorage.setItem('sh_review_auth', authParam);
+    try {
+      params.delete('auth');
+      const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '') + window.location.hash;
+      history.replaceState(null, '', newUrl);
+    } catch(e) {}
+  }
+  return localStorage.getItem('sh_review_auth') || null;
+}
+
+function getDraftId() { return localStorage.getItem(DRAFT_ID_KEY) || null; }
+function setDraftId(id) {
+  localStorage.setItem(DRAFT_ID_KEY, id);
+  try {
+    const params = new URLSearchParams(window.location.search);
+    params.set('draft', id);
+    history.replaceState(null, '', window.location.pathname + '?' + params.toString() + window.location.hash);
+  } catch(e) {}
+}
+function clearDraftId() { localStorage.removeItem(DRAFT_ID_KEY); }
+
+async function saveDraft() {
+  const jwt = getAuthJwt();
+  if (!jwt) { showToast('Sign in from the dashboard to save drafts.', 'error'); return; }
+
+  const daName = document.getElementById('daName')?.value?.trim() || '';
+  const office = document.getElementById('homeOffice')?.value || '';
+
+  const _draftBtns = ['saveDraftBtn','headerSaveDraftBtn'].map(id => document.getElementById(id)).filter(Boolean);
+  _draftBtns.forEach(b => { b.disabled = true; b.textContent = '💾 Saving…'; });
+  showDraftNote('');
+
+  const state = collectFormState();
+
+  try {
+    const existingId = getDraftId();
+    const payload = {
+      form_type: 'da_90day',
+      employee_name: daName || 'Unnamed',
+      office: office || 'Unknown',
+      state,
+    };
+    if (existingId) payload.id = existingId;
+
+    let res = await fetch(WORKER_BASE + '/draft', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jwt },
+      body: JSON.stringify(payload),
+    });
+
+    // If draft ID was stale (deleted/expired), retry as a fresh save
+    if (res.status === 404 && payload.id) {
+      clearDraftId();
+      delete payload.id;
+      res = await fetch(WORKER_BASE + '/draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jwt },
+        body: JSON.stringify(payload),
+      });
+    }
+
+    if (res.ok) {
+      const data = await res.json();
+      setDraftId(data.id);
+      _draftBtns.forEach(b => { b.disabled = false; b.textContent = '💾 Save Draft'; });
+      showDraftNote('Draft saved ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}));
+      showToast('Draft saved!', 'success');
+    } else if (res.status === 401) {
+      _draftBtns.forEach(b => { b.disabled = false; b.textContent = '💾 Save Draft'; });
+      showToast('Session expired. Sign in again from the dashboard.', 'error');
+    } else {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || res.status);
+    }
+  } catch(e) {
+    _draftBtns.forEach(b => { b.disabled = false; b.textContent = '💾 Save Draft'; });
+    showToast('Could not save draft: ' + e.message, 'error');
+  }
+}
+
+async function loadDraftFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const draftId = params.get('draft');
+  if (!draftId) return;
+
+  const jwt = getAuthJwt();
+  if (!jwt) return;
+
+  try {
+    const res = await fetch(WORKER_BASE + '/draft/' + encodeURIComponent(draftId), {
+      headers: { 'Authorization': 'Bearer ' + jwt },
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    const draft = data.draft || data;
+    if (draft.state) {
+      setDraftId(draftId);
+      applyFormState(draft.state);
+      showDraftNote('Draft loaded · ' + (draft.employee_name || ''));
+      showToast('Draft resumed — ' + (draft.employee_name || 'draft') + ' · ' + (draft.office || ''), 'success');
+    }
+  } catch(e) {
+    console.warn('Could not load draft:', e);
+  }
+}
+
+// ─── FORM STATE ───────────────────────────────────────────────────────────────
+
+function collectFormState() {
+  const state = { _perfScores: {...perfScores}, _skillStates: {...skillStates}, _goalChecks: {...goalChecks} };
+  ['daName','homeOffice','currentTier','startDate','reviewDate','reviewerName',
+   'strengths','improvement','goals90','overallAssessment','reviewerSig'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) state[id] = el.value;
+  });
+  const advCheck = document.getElementById('advanceCheck');
+  if (advCheck) state._advanceCheck = advCheck.checked;
+  return state;
+}
+
+let _saveTimer = null;
+function saveFormState() {
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(() => {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(collectFormState()));
+  }, 300);
+}
+
+function applyFormState(state) {
+  ['daName','homeOffice','currentTier','startDate','reviewDate','reviewerName',
+   'strengths','improvement','goals90','overallAssessment','reviewerSig'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && state[id] !== undefined) el.value = state[id];
+  });
+  if (state._advanceCheck !== undefined) {
+    const cb = document.getElementById('advanceCheck');
+    if (cb) cb.checked = state._advanceCheck;
+  }
+  if (state._perfScores) {
+    Object.assign(perfScores, state._perfScores);
+    Object.keys(state._perfScores).forEach(id => {
+      updateScoreDisplay(id, state._perfScores[id]);
+    });
+  }
+  if (state._skillStates) {
+    Object.assign(skillStates, state._skillStates);
+    Object.keys(state._skillStates).forEach(k => {
+      const btn = document.getElementById(`skillBtn_${k}_${state._skillStates[k]}`);
+      if (btn) {
+        const row = btn.closest('.skill-eval-row');
+        if (row) {
+          row.querySelectorAll('.skill-radio-btn').forEach(b => b.className = 'skill-radio-btn');
+          btn.classList.add(state._skillStates[k]);
+        }
+      }
+    });
+  }
+  if (state._goalChecks) {
+    Object.assign(goalChecks, state._goalChecks);
+    Object.keys(state._goalChecks).forEach(k => {
+      const cb = document.getElementById(`goalCb_${k}`);
+      if (cb) cb.checked = state._goalChecks[k];
+    });
+  }
+  // Trigger tier render with restored tier value
+  if (document.getElementById('currentTier')?.value) onTierChange(true);
+  // Trigger assessment update
+  onAssessmentChange(true);
+  recalc();
+}
+
+function restoreFormState() {
+  const raw = localStorage.getItem(SAVE_KEY);
+  if (!raw) return;
+  let state;
+  try { state = JSON.parse(raw); } catch(e) { return; }
+  applyFormState(state);
+}
+
+// ─── RENDER: Tier sections ────────────────────────────────────────────────────
+
+function onTierChange(silent = false) {
+  const tierKey = document.getElementById('currentTier').value;
+  renderSection1(tierKey);
+  renderSection2(tierKey);
+  if (!silent) saveFormState();
+}
+
+function renderSection1(tierKey) {
+  const titleEl = document.getElementById('section1Title');
+  const subEl   = document.getElementById('section1Sub');
+  const bodyEl  = document.getElementById('section1Skills');
+
+  if (!tierKey || !TIERS[tierKey]) {
+    titleEl.textContent = 'Current Tier Requirements';
+    subEl.textContent = 'Select a tier above to see competency requirements.';
+    bodyEl.innerHTML = '<div style="text-align:center;padding:24px 0;color:var(--taupe);font-size:13px;">Select the current tier in the header section to load skills.</div>';
+    return;
+  }
+
+  const tier = TIERS[tierKey];
+  titleEl.textContent = `Current Tier Requirements — ${tier.label}`;
+  subEl.textContent = 'Check each competency the DA has demonstrated to your satisfaction.';
+
+  bodyEl.innerHTML = tier.skills.map((skill, idx) => {
+    const key = `${tierKey}_${idx}`;
+    const cur = skillStates[key] || null;
+    return `
+    <div class="skill-eval-row">
+      <span class="skill-eval-text">${skill}</span>
+      <div class="skill-radio-group">
+        <button class="skill-radio-btn${cur === 'achieved' ? ' achieved' : ''}" id="skillBtn_${key}_achieved" onclick="setSkillState('${key}','achieved')">&#10003; Achieved</button>
+        <button class="skill-radio-btn${cur === 'progressing' ? ' progressing' : ''}" id="skillBtn_${key}_progressing" onclick="setSkillState('${key}','progressing')">&#9889; Progressing</button>
+        <button class="skill-radio-btn${cur === 'not-yet' ? ' not-yet' : ''}" id="skillBtn_${key}_not-yet" onclick="setSkillState('${key}','not-yet')">&#10007; Not Yet</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderSection2(tierKey) {
+  const titleEl = document.getElementById('section2Title');
+  const subEl   = document.getElementById('section2Sub');
+  const bodyEl  = document.getElementById('section2Skills');
+
+  if (!tierKey || !TIERS[tierKey]) {
+    titleEl.textContent = 'Advancement Goals';
+    subEl.textContent = 'Select the current tier above to see advancement goals.';
+    bodyEl.innerHTML = '<div style="text-align:center;padding:24px 0;color:var(--taupe);font-size:13px;">Select the current tier above to see advancement goals.</div>';
+    return;
+  }
+
+  const tier = TIERS[tierKey];
+
+  if (!tier.next) {
+    titleEl.textContent = 'Advancement Goals';
+    subEl.textContent = '';
+    bodyEl.innerHTML = '<div style="padding:20px 16px;font-size:13px;color:var(--taupe);font-style:italic;">DA is at the highest tier — no advancement checklist.</div>';
+    return;
+  }
+
+  const nextTier = TIERS[tier.next];
+  titleEl.textContent = `Advancement Goals — Target: ${nextTier.label} (${nextTier.rate})`;
+  subEl.textContent = `Skills the DA needs to develop to advance to ${tier.next}.`;
+
+  bodyEl.innerHTML = nextTier.skills.map((skill, idx) => {
+    const key = `${tier.next}_${idx}`;
+    const checked = goalChecks[key] || false;
+    return `
+    <div class="goal-check-row">
+      <input type="checkbox" id="goalCb_${key}" ${checked ? 'checked' : ''} onchange="setGoalCheck('${key}', this.checked)">
+      <label class="goal-check-text" for="goalCb_${key}">${skill} — <em style="color:var(--taupe)">Discussed with DA</em></label>
+    </div>`;
+  }).join('');
+}
+
+function setSkillState(key, state) {
+  skillStates[key] = skillStates[key] === state ? null : state;
+  const val = skillStates[key];
+  ['achieved','progressing','not-yet'].forEach(s => {
+    const btn = document.getElementById(`skillBtn_${key}_${s}`);
+    if (btn) { btn.className = 'skill-radio-btn' + (val === s ? ' ' + s : ''); }
+  });
+  saveFormState();
+}
+
+function setGoalCheck(key, checked) {
+  goalChecks[key] = checked;
+  saveFormState();
+}
+
+// ─── RENDER: Performance ─────────────────────────────────────────────────────
+
+function renderPerf() {
+  document.getElementById('perfBody').innerHTML = PERF_CATS.map(cat => {
+    const score = perfScores[cat.id] || 0;
+    return `
+    <div class="perf-row" id="perfRow_${cat.id}">
+      <span class="perf-cat">${cat.label}</span>
+      <div class="perf-score-ctl">
+        <button class="score-dec" id="dec_${cat.id}" onclick="changeScore('${cat.id}',-1)" title="Decrease">−</button>
+        <span class="score-val${score > 0 ? ' nonzero' : ''}" id="scoreVal_${cat.id}">${score}</span>
+        <span class="score-max">/ 5</span>
+        <button class="score-inc" id="inc_${cat.id}" onclick="changeScore('${cat.id}',+1)" title="Increase">+</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function changeScore(id, delta) {
+  const cur = perfScores[id] || 0;
+  const next = Math.max(0, Math.min(5, cur + delta));
+  perfScores[id] = next;
+  updateScoreDisplay(id, next);
+  recalc();
+  saveFormState();
+}
+
+function updateScoreDisplay(id, val) {
+  const valEl = document.getElementById(`scoreVal_${id}`);
+  const decEl = document.getElementById(`dec_${id}`);
+  const incEl = document.getElementById(`inc_${id}`);
+  if (valEl) { valEl.textContent = val; valEl.className = 'score-val' + (val > 0 ? ' nonzero' : ''); }
+  if (decEl) decEl.className = 'score-dec' + (val > 0 ? ' active' : '');
+  if (incEl) incEl.className = 'score-inc' + (val < 5 ? '' : '');
+}
+
+// ─── CALCULATION ─────────────────────────────────────────────────────────────
+
+function recalc() {
+  const total = PERF_CATS.reduce((sum, cat) => sum + (perfScores[cat.id] || 0), 0);
+  document.getElementById('totalScore').textContent = total;
+  document.getElementById('scoreTotalDisplay').textContent = total;
+
+  const { band, cls, desc } = getBand(total);
+  document.getElementById('bandName').textContent = band;
+  document.getElementById('bandName').style.opacity = '';
+  document.getElementById('bandDesc').textContent = desc;
+
+  const chip = document.getElementById('bandChip');
+  chip.textContent = band;
+  chip.style.display = total > 0 ? 'inline-block' : 'none';
+  chip.className = 'band-chip ' + cls;
+}
+
+function getBand(score) {
+  if (score <= 14) return { band: 'Needs Improvement Plan',   cls: 'band-needs',      desc: 'Significant concerns — formal improvement plan required' };
+  if (score <= 20) return { band: 'Below Expectations',       cls: 'band-below',      desc: 'Falling short in multiple areas; coaching needed' };
+  if (score <= 25) return { band: 'Meets Expectations',       cls: 'band-meets',      desc: 'Solid performance for this stage of tenure' };
+  if (score <= 28) return { band: 'Exceeds Expectations',     cls: 'band-exceeds',    desc: 'Strong performance; progressing ahead of schedule' };
+  return             { band: 'Outstanding',                  cls: 'band-outstanding', desc: 'Exceptional — exceeded all expectations in first 90 days' };
+}
+
+function getBandLabel() {
+  const total = PERF_CATS.reduce((sum, cat) => sum + (perfScores[cat.id] || 0), 0);
+  return getBand(total).band;
+}
+
+// ─── ASSESSMENT ───────────────────────────────────────────────────────────────
+
+function onAssessmentChange(silent = false) {
+  const val = document.getElementById('overallAssessment').value;
+  const tierKey = document.getElementById('currentTier').value;
+  const row = document.getElementById('advanceCheckRow');
+  const lbl = document.getElementById('advanceCheckLabel');
+  const cb  = document.getElementById('advanceCheck');
+
+  if (val === 'ready_advance' && tierKey && TIERS[tierKey] && TIERS[tierKey].next) {
+    const nextLabel = TIERS[TIERS[tierKey].next].label;
+    lbl.textContent = `I recommend advancing this DA to ${TIERS[tierKey].next} — ${nextLabel}`;
+    row.style.display = 'flex';
+  } else {
+    row.style.display = 'none';
+    if (cb) cb.checked = false;
+  }
+  if (!silent) saveFormState();
+}
+
+// ─── SUBMIT ──────────────────────────────────────────────────────────────────
+
+function buildSummaryText() {
+  const f = id => document.getElementById(id)?.value || '—';
+  const daName = f('daName'), office = f('homeOffice'), tier = f('currentTier');
+  const startDate = f('startDate'), reviewDate = f('reviewDate'), reviewer = f('reviewerName');
+  const total = PERF_CATS.reduce((sum, cat) => sum + (perfScores[cat.id] || 0), 0);
+  const band = getBandLabel();
+  const assessment = f('overallAssessment').replace('_', ' ');
+  const strengths = f('strengths'), improvement = f('improvement'), goals = f('goals90');
+  const sig = f('reviewerSig');
+  const advCheck = document.getElementById('advanceCheck')?.checked;
+
+  const catScores = PERF_CATS.map(cat => `  ${cat.label}: ${perfScores[cat.id] || 0}/5`).join('\n');
+
+  const tierKey = tier, tierData = TIERS[tierKey] || {};
+  const skillSummary = (tierData.skills || []).map((skill, idx) => {
+    const state = skillStates[`${tierKey}_${idx}`];
+    const label = state === 'achieved' ? '✓ Achieved' : state === 'progressing' ? '⚡ Progressing' : state === 'not-yet' ? '✗ Not Yet' : '— Not evaluated';
+    return `  ${skill}: ${label}`;
+  }).join('\n');
+
+  const nextTierKey = tierData.next;
+  const nextTier = nextTierKey ? TIERS[nextTierKey] : null;
+  const goalSummary = nextTier ? (nextTier.skills || []).map((skill, idx) => {
+    const checked = goalChecks[`${nextTierKey}_${idx}`] ? '[x]' : '[ ]';
+    return `  ${checked} ${skill}`;
+  }).join('\n') : 'N/A — at highest tier';
+
+  return [
+    'DA 90-DAY REVIEW — SMILE HAUS',
+    '═══════════════════════════════════',
+    `DA: ${daName}  |  Office: ${office}  |  Tier: ${tier}`,
+    `Start Date: ${startDate}  |  Review Date: ${reviewDate}  |  Reviewer: ${reviewer}`,
+    '',
+    'PERFORMANCE SCORES (out of 30)',
+    catScores,
+    `TOTAL: ${total}/30 — ${band}`,
+    '',
+    'OVERALL ASSESSMENT',
+    `  ${assessment}${advCheck ? '  ·  Advancement recommended' : ''}`,
+    '',
+    'CURRENT TIER COMPETENCIES',
+    skillSummary || '  (none evaluated)',
+    '',
+    'ADVANCEMENT GOALS',
+    goalSummary,
+    '',
+    'FEEDBACK',
+    `  Strengths: ${strengths}`,
+    `  Improvement: ${improvement}`,
+    `  90-Day Goals: ${goals}`,
+    '',
+    `Reviewer Signature: ${sig}  |  Submitted: ${new Date().toLocaleDateString()}`,
+  ].join('\n');
+}
+
+async function handleSubmit() {
+  const daName = document.getElementById('daName').value.trim();
+  const office = document.getElementById('homeOffice').value;
+  const tier   = document.getElementById('currentTier').value;
+  const reviewer = document.getElementById('reviewerName').value.trim();
+  const reviewDate = document.getElementById('reviewDate').value || new Date().toISOString().slice(0,10);
+  const sig = document.getElementById('reviewerSig').value.trim();
+
+  if (!daName || !office || !tier || !sig) {
+    showToast('Fill in DA Name, Office, Tier, and Reviewer Signature before submitting.', 'error'); return;
+  }
+
+  const cfg = getConfig();
+  if (!cfg.workerUrl) { showToast('Worker URL not configured. Contact IT.', 'error'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+
+  const total = PERF_CATS.reduce((sum, cat) => sum + (perfScores[cat.id] || 0), 0);
+  const bandLabel = getBandLabel();
+  const summary = buildSummaryText();
+
+  const taskName = `DA 90-Day Review — ${daName} — ${office} — ${reviewDate}`;
+  const taskBody = JSON.stringify({
+    name: taskName,
+    description: summary,
+    priority: 2,
+    custom_fields: [],
+  });
+
+  const jwt = getAuthJwt();
+  const headers = { 'Content-Type': 'application/json' };
+  if (jwt) headers['Authorization'] = 'Bearer ' + jwt;
+
+  try {
+    const res = await fetch(cfg.workerUrl, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        task_name: taskName,
+        task_body: taskBody,
+        da_name: daName,
+        office,
+        tier,
+        review_date: reviewDate,
+        score: `${total}/30`,
+        band: bandLabel,
+        raise: 'N/A',
+        new_rate: 'N/A',
+        reviewer: reviewer || sig,
+        summary,
+        form_type: 'da_90day',
+        form_state: collectFormState(),
+        draft_id: getDraftId() || undefined,
+      }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      clearDraftId();
+      showDraftNote('');
+      const clickupOk = !!data.clickup_ok;
+      showToast(clickupOk ? 'Review submitted — ClickUp task created ✓' : 'Submitted but ClickUp task may have failed — check console', clickupOk ? 'success' : 'error');
+    } else {
+      const errText = await res.text().catch(() => res.status);
+      console.error('Worker responded', res.status, errText);
+      showToast('Submission failed (status ' + res.status + '). See console.', 'error');
+    }
+  } catch(e) {
+    console.error('Submit error:', e);
+    showToast('Network error: ' + e.message, 'error');
+  }
+
+  btn.disabled = false; btn.textContent = 'Submit for Approval';
+}
+
+// ─── RESET ────────────────────────────────────────────────────────────────────
+
+function confirmReset() { document.getElementById('resetModal').classList.add('show'); }
+function closeResetModal() { document.getElementById('resetModal').classList.remove('show'); }
+
+function resetForm() {
+  closeResetModal();
+  localStorage.removeItem(SAVE_KEY);
+
+  // Clear state objects
+  Object.keys(perfScores).forEach(k => delete perfScores[k]);
+  Object.keys(skillStates).forEach(k => delete skillStates[k]);
+  Object.keys(goalChecks).forEach(k => delete goalChecks[k]);
+
+  // Reset all form fields
+  ['daName','homeOffice','currentTier','startDate','reviewDate','reviewerName',
+   'strengths','improvement','goals90','overallAssessment','reviewerSig'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('advanceCheck').checked = false;
+  document.getElementById('advanceCheckRow').style.display = 'none';
+
+  // Set today's date
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById('reviewDate').value = today;
+
+  // Re-render dynamic sections
+  renderPerf();
+  renderSection1('');
+  renderSection2('');
+
+  // Clear draft tracking
+  clearDraftId();
+  showDraftNote('');
+  try {
+    const p = new URLSearchParams(window.location.search);
+    p.delete('draft');
+    history.replaceState(null, '', window.location.pathname + (p.toString() ? '?' + p.toString() : '') + window.location.hash);
+  } catch(e) {}
+
+  recalc();
+  showToast('Form has been reset.', 'success');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+
+renderPerf();
+renderSection1('');
+renderSection2('');
+
+// Set today's date
+document.getElementById('reviewDate').value = new Date().toISOString().slice(0,10);
+
+// Auth: process ?auth= param, show dashboard nav if logged in
+getAuthJwt();
+if (localStorage.getItem('sh_review_auth')) {
+  ['backToHomeBtn','backToRecordsBtn','headerSaveDraftBtn'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.style.display = 'inline-flex';
+  });
+}
+
+// Draft / state restore
+const _urlDraftId = new URLSearchParams(window.location.search).get('draft');
+if (_urlDraftId) {
+  setDraftId(_urlDraftId);
+  loadDraftFromUrl().then(() => {});
+} else {
+  clearDraftId();
+  restoreFormState();
+}
+
+// Auto-save on input changes
+document.querySelector('.main').addEventListener('input', saveFormState);
+document.querySelector('.main').addEventListener('change', saveFormState);
+</script>
+</body>
+</html>
