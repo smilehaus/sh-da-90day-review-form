@@ -10,8 +10,8 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --onyx: #1a1a2e; --alabaster: #F2EFE8; --sandstone: #D6CDBD;
-  --taupe: #877765; --earth: #877765; --teal: #4ecdc4; --white: #FFFFFF; --radius: 12px;
+  --onyx: #2A2E31; --alabaster: #F2EFE8; --sandstone: #D6CDBD;
+  --taupe: #C2B09E; --earth: #877765; --white: #FFFFFF; --radius: 6px;
   --font-head: 'Cormorant Garamond', serif; --font-body: 'Jost', sans-serif;
 }
 body { font-family: var(--font-body); background: var(--alabaster); color: var(--onyx); font-size: 15px; line-height: 1.5; }
@@ -20,192 +20,247 @@ body { font-family: var(--font-body); background: var(--alabaster); color: var(-
 .site-header { background: var(--onyx); padding: 18px 40px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .site-header img { height: 36px; flex-shrink: 0; }
 .site-header h1 { font-family: var(--font-head); color: var(--white); font-weight: 300; font-size: 22px; letter-spacing: 0.04em; flex: 1; text-align: center; }
-.header-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: var(--white); border-radius: 7px; padding: 6px 13px; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; white-space: nowrap; text-decoration: none; display: inline-flex; align-items: center; transition: background 0.15s; }
-.header-btn:hover { background: rgba(255,255,255,0.12); }
-.reset-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.7); border-radius: 7px; padding: 6px 13px; cursor: pointer; font-family: var(--font-body); font-size: 13px; white-space: nowrap; transition: all 0.15s; }
+.settings-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: var(--white); border-radius: var(--radius); padding: 6px 14px; cursor: pointer; font-family: var(--font-body); font-size: 13px; white-space: nowrap; }
+.settings-btn:hover { border-color: rgba(255,255,255,0.7); }
+.reset-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.7); border-radius: var(--radius); padding: 6px 14px; cursor: pointer; font-family: var(--font-body); font-size: 13px; white-space: nowrap; transition: all 0.15s; }
 .reset-btn:hover { border-color: #ff8a80; color: #ff8a80; }
+.edit-lock-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: var(--white); border-radius: var(--radius); padding: 6px 14px; cursor: pointer; font-family: var(--font-body); font-size: 13px; white-space: nowrap; transition: all 0.15s; }
+.edit-lock-btn:hover { border-color: rgba(255,255,255,0.7); }
+.edit-lock-btn.locked { border-color: rgba(255,200,100,0.5); color: #ffd580; }
+/* Locked form state */
+body.form-locked input, body.form-locked select, body.form-locked textarea { opacity: 0.7; pointer-events: none; background: #f5f3ef; }
+body.form-locked .skill-btn, body.form-locked .score-btn, body.form-locked .pass-all-btn, body.form-locked .fail-all-btn, body.form-locked .tier-expand-btn, body.form-locked #submitBtn { pointer-events: none; opacity: 0.55; }
+.pin-error { color: #c0392b; font-size: 13px; margin-top: 6px; display: none; }
 
 /* Main */
 .main { max-width: 960px; margin: 0 auto; padding: 28px 24px 80px; }
 
 /* Cards */
-.card { background: var(--white); border: 1px solid var(--sandstone); border-radius: var(--radius); margin-bottom: 20px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-.card-header { background: var(--onyx); color: var(--white); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
-.card-header h2 { font-family: var(--font-head); font-weight: 300; font-size: 19px; letter-spacing: 0.03em; }
+.card { background: var(--white); border: 1px solid var(--sandstone); border-radius: var(--radius); margin-bottom: 20px; overflow: hidden; }
+.card-header { background: var(--onyx); color: var(--white); padding: 11px 20px; display: flex; align-items: center; justify-content: space-between; }
+.card-header h2 { font-family: var(--font-head); font-weight: 300; font-size: 18px; letter-spacing: 0.03em; }
 .card-header .pts { font-size: 12px; opacity: 0.55; }
 .card-body { padding: 20px; }
 
 /* Info grid */
 .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 label.field-label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--earth); margin-bottom: 4px; }
-input[type=text], input[type=date], select, textarea {
-  width: 100%; padding: 9px 12px; border: 1px solid var(--sandstone); border-radius: 8px;
+input[type=text], input[type=date], input[type=number], select, textarea {
+  width: 100%; padding: 9px 12px; border: 1px solid var(--sandstone); border-radius: var(--radius);
   font-family: var(--font-body); font-size: 14px; background: var(--white); color: var(--onyx);
 }
-textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
-input:focus, select:focus, textarea:focus { outline: 2px solid var(--taupe); border-color: transparent; }
+textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--earth); border-color: transparent; }
 
-/* Score summary sticky bar */
-.score-summary {
-  position: sticky; top: 10px; z-index: 10;
-  background: var(--onyx); color: var(--white); border-radius: var(--radius);
-  padding: 14px 24px; margin-bottom: 20px;
-  display: grid; grid-template-columns: 1fr 2fr; gap: 16px; align-items: center;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+/* Scale bar */
+.scale-bar { background: var(--white); border: 1px solid var(--sandstone); border-radius: var(--radius); padding: 8px 16px; font-size: 12px; text-align: center; color: var(--earth); margin-bottom: 18px; }
+.scale-bar b { color: var(--onyx); }
+
+/* Tables */
+.kpi-table, .perf-table { width: 100%; border-collapse: collapse; }
+.kpi-table th, .perf-table th { background: var(--earth); color: var(--white); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 9px 14px; text-align: left; }
+.kpi-table th.c, .perf-table th.c { text-align: center; }
+.kpi-table td, .perf-table td { padding: 9px 14px; border-bottom: 1px solid var(--sandstone); vertical-align: middle; }
+.kpi-table tr:last-child td, .perf-table tr:last-child td { border-bottom: none; }
+.kpi-table tr:nth-child(even) td, .perf-table tr:nth-child(even) td { background: var(--alabaster); }
+.kpi-name, .crit-name { font-size: 14px; font-weight: 500; }
+.kpi-sub, .crit-desc { font-size: 12px; color: #5a4a3c; margin-top: 2px; }
+.kpi-target-input { border: none; background: transparent; font-family: var(--font-body); font-size: 13px; color: #5a4a3c; text-align: center; width: 100%; padding: 0; cursor: default; }
+[contenteditable="true"] { outline: none; border-bottom: 1px dashed var(--sandstone); border-radius: 2px; cursor: text; background: #fffdf9; padding: 0 2px; }
+[contenteditable="true"]:focus { background: #fff8ee; border-bottom-color: var(--earth); }
+[data-editable] { cursor: text; border-radius: 3px; min-width: 20px; display: inline-block; padding: 0 2px; transition: background 0.1s; }
+[data-editable]:hover { background: #fffdf9; outline: 1px dashed var(--sandstone); outline-offset: 1px; }
+[data-editable]:focus { background: #fff8ee !important; outline: 2px solid var(--earth) !important; outline-offset: 1px; }
+
+/* Score buttons (1-5) */
+.score-group { display: flex; gap: 4px; justify-content: center; }
+.score-btn {
+  width: 34px; height: 34px; border: 1.5px solid var(--sandstone); background: var(--white);
+  border-radius: 50%; cursor: pointer; font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  color: var(--onyx); transition: all 0.12s; display: flex; align-items: center; justify-content: center;
 }
-.sum-block { text-align: center; }
-.sum-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; margin-bottom: 2px; }
-.sum-value { font-size: 28px; font-weight: 700; font-family: var(--font-head); line-height: 1; }
-.band-block { text-align: right; }
-.band-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-.band-desc { font-size: 12px; opacity: 0.6; }
+.score-btn:hover { border-color: var(--earth); color: var(--earth); }
+.score-btn.active { background: var(--earth); border-color: var(--earth); color: var(--white); }
 
-/* Tier section */
-.tier-section-title { font-size: 14px; font-weight: 600; color: var(--onyx); margin-bottom: 4px; }
-.tier-section-sub { font-size: 12px; color: var(--taupe); margin-bottom: 14px; }
+/* Section subtotals + notes */
+.subtotal-row { text-align: right; padding: 8px 14px; font-size: 13px; color: var(--earth); font-weight: 600; border-top: 1px solid var(--sandstone); background: var(--alabaster); }
+.section-notes { padding: 12px 14px 14px; border-top: 1px solid #f0ece4; }
+.section-notes .field-label { margin-bottom: 6px; }
 
-/* Skill rows for Section 1 (3-radio) */
-.skill-eval-row { display: flex; align-items: flex-start; gap: 14px; padding: 10px 16px; border-bottom: 1px solid #f0ece4; }
-.skill-eval-row:last-child { border-bottom: none; }
-.skill-eval-row:nth-child(even) { background: #fafaf8; }
-.skill-eval-text { flex: 1; font-size: 13px; color: var(--onyx); line-height: 1.4; padding-top: 2px; }
-.skill-radio-group { display: flex; gap: 6px; flex-shrink: 0; }
-.skill-radio-btn {
-  padding: 4px 10px; border: 1.5px solid var(--sandstone); border-radius: 6px;
-  cursor: pointer; font-family: var(--font-body); font-size: 12px; font-weight: 600;
-  background: var(--white); color: var(--onyx); transition: all 0.12s; white-space: nowrap;
+/* Narrative sections */
+.narrative-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.narrative-field { display: flex; flex-direction: column; }
+.narrative-field textarea { flex: 1; min-height: 100px; }
+.narrative-full { grid-column: 1 / -1; }
+
+/* Tier checklist */
+.tier-accordion { border: 1px solid var(--sandstone); border-radius: var(--radius); overflow: hidden; margin-bottom: 0; }
+.tier-row { border-bottom: 1px solid var(--sandstone); }
+.tier-row:last-child { border-bottom: none; }
+.tier-header { display: flex; align-items: center; padding: 10px 16px; gap: 8px; width: 100%; box-sizing: border-box; }
+.tier-header.current-tier { background: #f0ede6; }
+.tier-header.next-tier { background: #f5f0eb; }
+.tier-header-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; overflow: hidden; }
+.tier-header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-left: auto; }
+.tier-badge { font-size: 12px; font-weight: 700; background: var(--onyx); color: var(--white); padding: 2px 8px; border-radius: 3px; flex-shrink: 0; }
+.tier-badge.current { background: var(--earth); }
+.tier-badge.next { background: var(--taupe); }
+.tier-title { font-size: 13px; font-weight: 500; }
+.add-skill-btn { font-family: var(--font-body); font-size: 12px; color: var(--earth); background: none; border: 1px dashed var(--sandstone); border-radius: 4px; padding: 4px 12px; cursor: pointer; width: 100%; text-align: left; margin-top: 4px; transition: all 0.12s; }
+.add-skill-btn:hover { border-color: var(--earth); background: #faf8f4; }
+body.form-locked .add-skill-btn { display: none; }
+.skill-name[contenteditable="true"]:empty:before { content: "Enter skill description…"; color: var(--taupe); font-style: italic; pointer-events: none; }
+.tier-rate { font-size: 12px; color: var(--taupe); flex-shrink: 0; }
+.tier-gate-status { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 3px; flex-shrink: 0; }
+.gate-pass { background: #d4edda; color: #2d6a3f; }
+.gate-fail { background: #fde8e8; color: #8a3a3a; }
+.tier-expand-btn { background: none; border: 1px solid var(--sandstone); border-radius: 4px; width: 28px; height: 26px; cursor: pointer; font-size: 15px; line-height: 1; color: var(--taupe); flex-shrink: 0; transition: transform 0.18s ease, border-color 0.15s, color 0.15s; display: flex; align-items: center; justify-content: center; transform: rotate(0deg); }
+.tier-expand-btn:hover { border-color: var(--earth); color: var(--earth); }
+.tier-expand-btn.open { transform: rotate(90deg); }
+.pass-all-btn {
+  font-family: var(--font-body); font-size: 11px; font-weight: 600;
+  background: #d4edda; border: 1.5px solid #2d6a3f; color: #2d6a3f;
+  border-radius: 4px; padding: 3px 9px; cursor: pointer; flex-shrink: 0;
+  transition: all 0.12s; white-space: nowrap;
 }
-.skill-radio-btn:hover { border-color: var(--taupe); }
-.skill-radio-btn.achieved { background: #d4edda; border-color: #2d6a3f; color: #2d6a3f; }
-.skill-radio-btn.progressing { background: #fff3cd; border-color: #c8860a; color: #c8860a; }
-.skill-radio-btn.not-yet { background: #fde8e8; border-color: #c0392b; color: #c0392b; }
-
-/* Goals checklist (Section 2) */
-.goal-check-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #f0ece4; }
-.goal-check-row:last-child { border-bottom: none; }
-.goal-check-row:nth-child(even) { background: #fafaf8; }
-.goal-check-row input[type=checkbox] { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--taupe); flex-shrink: 0; cursor: pointer; }
-.goal-check-text { font-size: 13px; color: var(--onyx); line-height: 1.4; }
-
-/* Score section (Section 3) */
-.perf-row { display: flex; align-items: center; gap: 14px; padding: 11px 16px; border-bottom: 1px solid #f0ece4; }
-.perf-row:last-child { border-bottom: none; }
-.perf-row:nth-child(even) { background: #fafaf8; }
-.perf-cat { flex: 1; font-size: 14px; font-weight: 500; color: var(--onyx); }
-.perf-score-ctl { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-.score-dec, .score-inc {
-  width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--sandstone);
-  background: var(--white); cursor: pointer; font-size: 18px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center; line-height: 1;
-  color: var(--taupe); transition: all 0.12s; flex-shrink: 0;
+.pass-all-btn:hover { background: #2d6a3f; color: #fff; }
+.pass-all-btn.all-passed { background: #2d6a3f; color: #fff; }
+.fail-all-btn {
+  font-family: var(--font-body); font-size: 11px; font-weight: 600;
+  background: #fde8e8; border: 1.5px solid #8a3a3a; color: #8a3a3a;
+  border-radius: 4px; padding: 3px 9px; cursor: pointer; flex-shrink: 0;
+  transition: all 0.12s; white-space: nowrap;
 }
-.score-dec:hover, .score-inc:hover { border-color: var(--taupe); background: var(--alabaster); }
-.score-dec.active, .score-inc.active { background: var(--teal); border-color: var(--teal); color: var(--white); }
-.score-val { font-size: 20px; font-weight: 700; width: 30px; text-align: center; font-family: var(--font-head); }
-.score-val.nonzero { color: var(--teal); }
-.score-max { font-size: 12px; color: var(--taupe); opacity: 0.7; }
+.fail-all-btn:hover { background: #8a3a3a; color: #fff; }
+.fail-all-btn.all-failed { background: #8a3a3a; color: #fff; }
+.tier-body { display: none; border-top: 1px solid var(--sandstone); }
+.tier-body.open { display: block; }
+.skill-row { display: flex; align-items: center; gap: 12px; padding: 8px 16px; border-bottom: 1px solid #f0ece4; }
+.skill-row:last-child { border-bottom: none; }
+.skill-row:nth-child(even) { background: #fafaf8; }
+.skill-name { flex: 1; font-size: 13px; color: var(--onyx); line-height: 1.4; font-family: var(--font-body); font-weight: 400; cursor: default; }
+.skill-name[contenteditable="true"] { color: var(--onyx); font-size: 13px; font-family: var(--font-body); font-weight: 400; cursor: text; outline: none; border: none; background: none; }
+.skill-delete-btn { background: none; border: none; cursor: pointer; font-size: 13px; color: var(--taupe); padding: 2px 4px; border-radius: 3px; flex-shrink: 0; opacity: 0; transition: opacity 0.15s, color 0.15s; }
+.skill-row:hover .skill-delete-btn { opacity: 1; }
+.skill-delete-btn:hover { color: #c0392b; }
+body.form-locked .skill-delete-btn { display: none; }
+.skill-btns { display: flex; gap: 4px; flex-shrink: 0; }
+.skill-btn {
+  width: 32px; height: 28px; border: 1.5px solid var(--sandstone); background: var(--white);
+  border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.12s;
+  display: flex; align-items: center; justify-content: center;
+}
+.skill-btn:hover { border-color: var(--earth); }
+.skill-btn.can-do { background: #d4edda; border-color: #2d6a3f; color: #2d6a3f; }
+.skill-btn.cannot-do { background: #fde8e8; border-color: #c0392b; color: #c0392b; }
 
-/* Total bar */
-.score-total-bar { background: var(--alabaster); border-top: 1px solid var(--sandstone); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
-.score-total-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--taupe); }
-.score-total-val { font-size: 20px; font-weight: 700; font-family: var(--font-head); }
-.band-chip { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-left: 12px; }
-.band-needs  { background: #fde8e8; color: #8a3a3a; }
-.band-below  { background: #fff3cd; color: #7a5800; }
-.band-meets  { background: #d4edda; color: #2d6a3f; }
-.band-exceeds { background: #cce8ff; color: #1a5a8a; }
-.band-outstanding { background: #f0e6ff; color: #5a2d8a; }
+/* Gate summary */
+.gate-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+.gate-box { padding: 14px 16px; border-radius: var(--radius); border: 1.5px solid var(--sandstone); text-align: center; }
+.gate-box.pass { background: #d4edda; border-color: #2d6a3f; }
+.gate-box.fail { background: #fde8e8; border-color: #e74c3c; }
+.gate-box.incomplete { background: var(--alabaster); }
+.gate-box-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; color: var(--earth); }
+.gate-box-status { font-size: 16px; font-weight: 700; }
+.gate-box.pass .gate-box-status { color: #2d6a3f; }
+.gate-box.fail .gate-box-status { color: #c0392b; }
+.gate-box.incomplete .gate-box-status { color: var(--taupe); }
+.gate-box-sub { font-size: 11px; color: var(--taupe); margin-top: 3px; }
 
-/* Assessment */
-.assess-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: end; }
-.advance-check-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--alabaster); border: 1px solid var(--sandstone); border-radius: 8px; margin-top: 10px; }
-.advance-check-row input[type=checkbox] { width: 17px; height: 17px; accent-color: var(--taupe); cursor: pointer; }
-.advance-check-row label { font-size: 13px; font-weight: 600; cursor: pointer; }
+/* Signature block */
+.sig-block { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+.sig-line { border-bottom: 1.5px solid var(--sandstone); min-height: 42px; padding: 8px 12px; font-size: 14px; background: var(--white); border-radius: 0; width: 100%; border-top: none; border-left: none; border-right: none; }
 
-/* Signature */
-.sig-input { border: none; border-bottom: 1.5px solid var(--sandstone); border-radius: 0; background: transparent; font-size: 14px; padding: 8px 0; }
+/* Override box */
+.override-box { margin-top: 0; border: 1.5px solid var(--sandstone); border-radius: var(--radius); overflow: hidden; }
+.override-toggle { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--alabaster); cursor: pointer; user-select: none; }
+.override-toggle input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--earth); cursor: pointer; flex-shrink: 0; }
+.override-toggle-label { font-size: 13px; font-weight: 600; color: var(--onyx); }
+.override-toggle-sub { font-size: 12px; color: var(--earth); margin-left: auto; }
+.override-body { display: none; padding: 16px; border-top: 1px solid var(--sandstone); background: #fffdf9; }
+.override-body.open { display: block; }
 
-/* Submit section */
-.submit-section { background: var(--white); border: 1px solid var(--sandstone); border-radius: var(--radius); padding: 24px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+/* Submit */
+.submit-section { background: var(--white); border: 1px solid var(--sandstone); border-radius: var(--radius); padding: 24px; margin-top: 20px; }
 .submit-section h2 { font-family: var(--font-head); font-weight: 400; font-size: 20px; margin-bottom: 18px; }
-.submit-btn { background: var(--taupe); color: var(--white); border: none; border-radius: 8px; padding: 14px 32px; font-family: var(--font-body); font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; letter-spacing: 0.03em; transition: background 0.2s; margin-top: 8px; }
+.submit-btn { background: var(--earth); color: var(--white); border: none; border-radius: var(--radius); padding: 14px 32px; font-family: var(--font-body); font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; letter-spacing: 0.03em; transition: background 0.2s; margin-top: 8px; }
 .submit-btn:hover { background: var(--onyx); }
 .submit-btn:disabled { background: var(--sandstone); cursor: not-allowed; }
-.draft-btn { background: none; border: 1px solid #c8b89a; color: #5a4a2a; border-radius: 8px; padding: 9px 20px; font-family: var(--font-body); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
-.draft-btn:hover { background: #f5f0e8; }
-.draft-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.preview-pdf-btn { background: none; border: 1px solid var(--sandstone); color: var(--earth); border-radius: var(--radius); padding: 9px 20px; font-family: var(--font-body); font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; margin-top: 8px; transition: all 0.15s; }
+.preview-pdf-btn:hover { border-color: var(--earth); background: var(--earth); color: var(--white); }
+.preview-pdf-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* Section divider */
+/* Dividers */
 .section-divider { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--earth); padding: 8px 0 6px; border-bottom: 1px solid var(--sandstone); margin-bottom: 14px; }
 
-/* Toast */
-.toast { position: fixed; bottom: 24px; right: 24px; background: var(--onyx); color: var(--white); padding: 14px 20px; border-radius: 10px; font-size: 14px; z-index: 200; opacity: 0; transform: translateY(10px); transition: all 0.3s; max-width: 380px; }
-.toast.show { opacity: 1; transform: translateY(0); }
-.toast.success { background: #3a7a4a; }
-.toast.error { background: #8a3a3a; }
+/* Assessment */
+.assessment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.recommendation-options { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.rec-option { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border: 1.5px solid var(--sandstone); border-radius: var(--radius); cursor: pointer; transition: all 0.12s; }
+.rec-option:hover { border-color: var(--earth); background: #faf8f4; }
+.rec-option.selected { border-color: var(--earth); background: #f5f0e8; }
+.rec-option input[type=radio] { margin-top: 2px; accent-color: var(--earth); flex-shrink: 0; }
+.rec-option-label { font-size: 13px; font-weight: 600; color: var(--onyx); }
+.rec-option-desc { font-size: 12px; color: var(--taupe); margin-top: 1px; }
 
 /* Modal */
 .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
 .modal-overlay.show { display: flex; }
-.modal { background: var(--white); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 420px; }
-.modal h3 { font-family: var(--font-head); font-weight: 400; font-size: 20px; margin-bottom: 10px; }
-.modal p { font-size: 14px; color: var(--taupe); margin-bottom: 20px; }
-.modal-actions { display: flex; gap: 10px; justify-content: center; }
-.btn-cancel { background: none; border: 1px solid var(--sandstone); padding: 9px 20px; border-radius: 8px; cursor: pointer; font-family: var(--font-body); font-size: 14px; }
-.btn-danger { background: #c0392b; color: #fff; border: none; padding: 9px 22px; border-radius: 8px; cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 600; }
+.modal { background: var(--white); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+.modal h3 { font-family: var(--font-head); font-weight: 400; font-size: 20px; margin-bottom: 6px; }
+.modal-hint { font-size: 13px; color: var(--taupe); margin-bottom: 20px; }
+.modal-field { margin-bottom: 14px; }
+.modal-section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--earth); margin: 18px 0 10px; border-top: 1px solid var(--sandstone); padding-top: 14px; }
+.modal-actions { margin-top: 20px; display: flex; gap: 10px; }
+.btn-save { background: var(--earth); color: var(--white); border: none; padding: 10px 20px; border-radius: var(--radius); cursor: pointer; font-family: var(--font-body); font-size: 14px; font-weight: 500; }
+.btn-cancel { background: none; border: 1px solid var(--sandstone); padding: 10px 20px; border-radius: var(--radius); cursor: pointer; font-family: var(--font-body); font-size: 14px; }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--onyx); color: var(--white); padding: 14px 20px; border-radius: var(--radius); font-size: 14px; z-index: 200; opacity: 0; transform: translateY(10px); transition: all 0.3s; max-width: 380px; }
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { background: #3a7a4a; }
+.toast.error { background: #8a3a3a; }
 
 /* Footer */
 .site-footer { background: var(--onyx); color: rgba(255,255,255,0.35); text-align: center; padding: 18px; font-size: 12px; margin-top: 48px; }
+.site-footer img { height: 20px; opacity: 0.3; vertical-align: middle; margin-right: 8px; }
 
 /* Mobile */
 @media (max-width: 640px) {
-  .info-grid, .assess-grid { grid-template-columns: 1fr; }
-  .score-summary { grid-template-columns: 1fr; }
-  .band-block { text-align: left; }
+  .info-grid, .narrative-grid, .sig-block, .gate-summary, .assessment-grid { grid-template-columns: 1fr; }
   .site-header { padding: 12px 14px; }
   .site-header h1 { font-size: 16px; }
   .main { padding: 14px 12px 60px; }
-  .skill-radio-group { flex-direction: column; gap: 4px; }
-  .skill-radio-btn { font-size: 11px; padding: 3px 8px; }
+  .score-btn { width: 30px; height: 30px; font-size: 13px; }
 }
 </style>
 </head>
 <body>
 
 <header class="site-header">
-  <img src="../da-review-form/logo-white.png" alt="Smile Haus" onerror="this.style.display='none'">
+  <img src="logo-white.png" alt="Smile Haus" onerror="this.style.display='none'">
   <h1>Dental Assistant 90-Day Review</h1>
   <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-    <a id="backToHomeBtn" href="https://sh-review-dashboard.pages.dev/" class="header-btn" style="display:none;">&#127968; Home</a>
-    <a id="backToRecordsBtn" href="https://sh-review-dashboard.pages.dev/records.html" class="header-btn" style="display:none;">&#8592; Records</a>
-    <button id="headerSaveDraftBtn" class="header-btn" onclick="saveDraft()" style="display:none;">&#128190; Save Draft</button>
+    <a id="backToHomeBtn" href="https://sh-review-dashboard.pages.dev/" style="display:none;padding:6px 13px;background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.3);border-radius:7px;color:#fff;font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap;" onmouseover="this.style.background='rgba(255,255,255,0.22)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">&#127968; Home</a>
+    <a id="backToRecordsBtn" href="https://sh-review-dashboard.pages.dev/records.html" style="display:none;padding:6px 13px;background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.3);border-radius:7px;color:#fff;font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap;" onmouseover="this.style.background='rgba(255,255,255,0.22)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">&#8592; Records</a>
+    <button id="headerSaveDraftBtn" onclick="saveDraft()" style="display:none;padding:6px 13px;background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.3);border-radius:7px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;">&#128190; Save Draft</button>
+    <button id="editLockBtn" class="edit-lock-btn" onclick="toggleLock()">&#9998; Edit</button>
     <button class="reset-btn" onclick="confirmReset()">&#8635; Reset</button>
+    <button class="settings-btn" onclick="openSettingsGated()">&#9881; Settings</button>
   </div>
 </header>
 
 <div class="main">
 
-  <!-- Sticky score summary -->
-  <div class="score-summary">
-    <div class="sum-block">
-      <div class="sum-label">Performance Score</div>
-      <div class="sum-value"><span id="totalScore">0</span><span style="font-size:14px;opacity:0.4">/30</span></div>
-    </div>
-    <div class="band-block">
-      <div class="band-name" id="bandName" style="opacity:0.35;">Fill in scores below</div>
-      <div class="band-desc" id="bandDesc">Rate each category 0–5 using the buttons</div>
-    </div>
-  </div>
-
   <!-- Employee Info -->
   <div class="card">
-    <div class="card-header"><h2>Review Information</h2></div>
+    <div class="card-header"><h2>Employee Information</h2></div>
     <div class="card-body">
       <div class="info-grid">
-        <div><label class="field-label">DA Name</label><input type="text" id="daName" placeholder="Full name" oninput="saveFormState()"></div>
+        <div><label class="field-label">DA Name</label><input type="text" id="daName" placeholder="Full name"></div>
         <div>
           <label class="field-label">Home Office</label>
-          <select id="homeOffice" onchange="saveFormState()">
+          <select id="homeOffice" onchange="onOfficeChange()">
             <option value="">— Select office —</option>
             <option>Georgetown</option><option>On the Square</option><option>Austin</option>
             <option>Implant Center</option><option>Medical Parkway</option><option>Arboretum</option>
@@ -213,125 +268,246 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--taupe); bor
             <option>New Braunfels Dental Arts</option><option>Anderson Mill</option>
           </select>
         </div>
+        <div><label class="field-label">Current Hourly Rate ($)</label><input type="number" id="currentRate" placeholder="e.g. 17.00" step="0.25" min="14" max="35"></div>
         <div>
-          <label class="field-label">Current Tier</label>
+          <label class="field-label">Current Tier <span id="tierAutoLabel" style="font-size:10px;font-weight:400;color:var(--taupe);text-transform:none;letter-spacing:0;margin-left:4px;"></span></label>
           <select id="currentTier" onchange="onTierChange()">
             <option value="">— Select tier —</option>
-            <option value="T1">T1 — $17/hr — Entry, Just Graduated</option>
-            <option value="T2">T2 — $18–19/hr — Entry-Level Solo Assist</option>
-            <option value="T3">T3 — $19–20/hr — Crown &amp; Bridge Proficient</option>
-            <option value="T4">T4 — $21–22/hr — Advanced DA</option>
-            <option value="T5">T5 — $23–24/hr — Lead DA</option>
-            <option value="T6">T6 — $25–26/hr — Senior DA</option>
-            <option value="T7">T7 — $27+/hr — Lead Senior DA</option>
           </select>
         </div>
-        <div><label class="field-label">Start Date</label><input type="date" id="startDate" oninput="saveFormState()"></div>
-        <div><label class="field-label">Review Date</label><input type="date" id="reviewDate" oninput="saveFormState()"></div>
-        <div><label class="field-label">Reviewer Name</label><input type="text" id="reviewerName" placeholder="Office Manager name" oninput="saveFormState()"></div>
+        <div><label class="field-label">Hire Date</label><input type="date" id="hireDate"></div>
+        <div><label class="field-label">Review Date</label><input type="date" id="reviewDate"></div>
+        <div><label class="field-label">Reviewer (OM Name)</label><input type="text" id="reviewerName" placeholder="Office Manager name"></div>
+        <div><label class="field-label">Review Period</label><input type="text" id="reviewPeriod" placeholder="e.g. First 90 days (Jan – Mar 2025)"></div>
       </div>
     </div>
   </div>
 
-  <!-- Section 1: Current Tier Competencies -->
-  <div class="card" id="section1Card">
-    <div class="card-header">
-      <h2 id="section1Title">Current Tier Requirements</h2>
-    </div>
-    <div class="card-body">
-      <p class="tier-section-sub" id="section1Sub">Select a tier above to see competency requirements.</p>
-      <div id="section1Skills">
-        <div style="text-align:center;padding:24px 0;color:var(--taupe);font-size:13px;">Select the current tier in the header section to load skills.</div>
-      </div>
-    </div>
+  <!-- Rating scale -->
+  <div class="scale-bar">
+    <b>Rating Scale</b> &nbsp;·&nbsp; <b>1</b> Does Not Meet &nbsp;·&nbsp; <b>2</b> Partially Meets &nbsp;·&nbsp; <b>3</b> Meets Expectations &nbsp;·&nbsp; <b>4</b> Exceeds &nbsp;·&nbsp; <b>5</b> Outstanding
   </div>
 
-  <!-- Section 2: Next Tier Goals -->
-  <div class="card" id="section2Card">
-    <div class="card-header">
-      <h2 id="section2Title">Advancement Goals</h2>
-    </div>
-    <div class="card-body">
-      <p class="tier-section-sub" id="section2Sub">Skills the DA needs to develop to advance to the next tier.</p>
-      <div id="section2Skills">
-        <div style="text-align:center;padding:24px 0;color:var(--taupe);font-size:13px;">Select the current tier above to see advancement goals.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Section 3: Performance Evaluation -->
+  <!-- Part I: KPIs -->
   <div class="card">
     <div class="card-header">
-      <h2>90-Day Performance Evaluation</h2>
-      <span class="pts">6 categories × 5 pts = 30 pts</span>
+      <h2>Part I — KPI Performance</h2>
+      <span class="pts" id="p1Header">/ 45 pts</span>
     </div>
     <div style="padding:0">
-      <div id="perfBody"></div>
-      <div class="score-total-bar">
-        <span class="score-total-label">Total</span>
-        <span>
-          <span class="score-total-val" id="scoreTotalDisplay">0</span>
-          <span style="font-size:13px;color:var(--taupe);"> / 30</span>
-          <span class="band-chip band-needs" id="bandChip" style="display:none;"></span>
-        </span>
+      <table class="kpi-table">
+        <thead><tr>
+          <th style="width:48%">KPI</th>
+          <th style="width:18%;text-align:center">Target</th>
+          <th style="width:34%;text-align:center">Score (1–5)</th>
+        </tr></thead>
+        <tbody id="kpiBody"></tbody>
+      </table>
+      <div class="subtotal-row">Part I Total: <span id="kpiSubtotal">0</span> / <span id="kpiDenom">45</span></div>
+      <div class="section-notes">
+        <label class="field-label">KPI Notes — Data Sources, Context, Exceptions</label>
+        <textarea id="kpiNotes" placeholder="Pull actuals from Oryx, sterilization logs, QA reports, Doctor feedback. Note any extenuating circumstances."></textarea>
       </div>
     </div>
   </div>
 
-  <!-- Section 4: Feedback & Development -->
+  <!-- Part II: 90-Day Performance Evaluation -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Part II — 90-Day Performance Evaluation</h2>
+      <span class="pts">/ 30 pts (6 categories × 5)</span>
+    </div>
+    <div style="padding:0">
+      <table class="perf-table">
+        <thead><tr>
+          <th style="width:62%">Category</th>
+          <th class="c" style="width:38%">Score (1–5)</th>
+        </tr></thead>
+        <tbody id="perfBody"></tbody>
+      </table>
+      <div class="subtotal-row">Part II Total: <span id="p2Subtotal">0</span> / 30</div>
+      <div class="section-notes">
+        <label class="field-label">Performance Notes</label>
+        <textarea id="perfNotes" placeholder="Specific observations, strengths observed, areas that need attention during the first 90 days…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feedback & Development -->
   <div class="card">
     <div class="card-header"><h2>Feedback &amp; Development</h2></div>
-    <div class="card-body" style="display:flex;flex-direction:column;gap:16px;">
-      <div>
-        <label class="field-label">Strengths — What is the DA doing well?</label>
-        <textarea id="strengths" placeholder="Be specific — highlight what you've observed in their first 90 days." oninput="saveFormState()"></textarea>
-      </div>
-      <div>
-        <label class="field-label">Areas for Improvement — Be specific</label>
-        <textarea id="improvement" placeholder="Describe behaviors or skills that need development. Reference specific situations when possible." oninput="saveFormState()"></textarea>
-      </div>
-      <div>
-        <label class="field-label">90-Day Goals — 3–5 concrete, measurable goals for the next period</label>
-        <textarea id="goals90" placeholder="e.g. 1. Achieve independent iTero scans by [date]&#10;2. Master sterilization SOP with 100% audit score&#10;3. Complete coronal polishing certification" oninput="saveFormState()"></textarea>
+    <div class="card-body">
+      <div class="narrative-grid">
+        <div class="narrative-field">
+          <label class="field-label">Strengths Observed</label>
+          <textarea id="strengths" placeholder="What has this DA done exceptionally well in their first 90 days? Be specific."></textarea>
+        </div>
+        <div class="narrative-field">
+          <label class="field-label">Areas for Improvement</label>
+          <textarea id="growthAreas" placeholder="Where does this DA need to develop? Be constructive and specific."></textarea>
+        </div>
+        <div class="narrative-field narrative-full">
+          <label class="field-label">90-Day Goals &amp; Action Plan</label>
+          <textarea id="goals" placeholder="List 2–4 specific, measurable goals for the next phase of their development."></textarea>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Section 5: Overall Assessment -->
+  <!-- Tier Competency Checklist -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Tier Competency Checklist</h2>
+      <span class="pts">Gate A · Gate B</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:13px;color:var(--taupe);margin-bottom:14px;">
+        Mark each skill: <strong style="color:#2d6a3f">✓ Can do</strong> or <strong style="color:#c0392b">✗ Cannot do</strong>.
+        Leave blank if not yet evaluated. <strong>Gate A</strong> = all skills at current tier and below are ✓.
+        <strong>Gate B</strong> = all skills at next tier are also ✓ (required to promote).
+      </p>
+      <div class="tier-accordion" id="tierAccordion"></div>
+      <div class="gate-summary" id="gateSummary">
+        <div class="gate-box incomplete" id="gateABox">
+          <div class="gate-box-label">Gate A — Current Tier Mastery</div>
+          <div class="gate-box-status" id="gateAStatus">Select your tier above</div>
+          <div class="gate-box-sub" id="gateASub">Required for advancement</div>
+        </div>
+        <div class="gate-box incomplete" id="gateBBox">
+          <div class="gate-box-label">Gate B — Next Tier Mastery</div>
+          <div class="gate-box-status" id="gateBStatus">Select your tier above</div>
+          <div class="gate-box-sub" id="gateBSub">Required for promotion</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manager Override -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Manager Override</h2>
+      <span class="pts">Immediate Raise Authorization</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:13px;color:var(--taupe);margin-bottom:14px;">
+        Use this section if an immediate raise was agreed upon as part of the 90-day offer or review conversation.
+        This is separate from the annual raise formula — it documents a specific rate adjustment.
+      </p>
+      <div class="override-box" id="overrideBox">
+        <div class="override-toggle" onclick="toggleOverride()">
+          <input type="checkbox" id="overrideCheck" onclick="event.stopPropagation(); toggleOverride()">
+          <span class="override-toggle-label">Authorize an Immediate Raise</span>
+          <span class="override-toggle-sub" id="overrideBadge">Off</span>
+        </div>
+        <div class="override-body" id="overrideBody">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div>
+              <label class="field-label" style="margin-bottom:6px;">New Hourly Rate ($)</label>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:14px;font-weight:600;color:var(--earth);">$</span>
+                <input type="number" id="overrideNewRate" min="14" step="0.25" placeholder="e.g. 18.50" style="flex:1;" oninput="onOverrideChange()">
+                <span style="font-size:13px;color:var(--earth);">/hr</span>
+              </div>
+              <div id="overrideRaiseSummary" style="font-size:12px;color:#5a4a3c;margin-top:4px;"></div>
+            </div>
+            <div>
+              <label class="field-label" style="margin-bottom:6px;">Effective Date</label>
+              <input type="date" id="overrideEffectiveDate">
+            </div>
+          </div>
+          <label class="field-label" style="margin-bottom:6px;">Justification</label>
+          <textarea id="overrideComment" rows="3" placeholder="Explain the reason for the immediate raise (e.g. meeting all 90-day milestones early, retention agreement, market adjustment)…" style="width:100%;"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overall Assessment & Recommendation -->
   <div class="card">
     <div class="card-header"><h2>Overall Assessment &amp; Recommendation</h2></div>
     <div class="card-body">
-      <div class="assess-grid">
-        <div>
-          <label class="field-label">Overall Assessment</label>
-          <select id="overallAssessment" onchange="onAssessmentChange()">
-            <option value="">— Select assessment —</option>
-            <option value="on_track">On Track — Meeting expectations for this stage</option>
-            <option value="needs_support">Needs Support — Falling behind; coaching plan required</option>
-            <option value="at_risk">At Risk — Performance is a concern; formal plan needed</option>
-            <option value="ready_advance">Ready to Advance — Exceeds current tier; recommend promotion</option>
-          </select>
-        </div>
-        <div>
-          <label class="field-label">Reviewer Signature (typed name)</label>
-          <input type="text" class="sig-input" id="reviewerSig" placeholder="Type full name to sign" style="width:100%;" oninput="saveFormState()">
+      <div style="margin-bottom:18px;">
+        <label class="field-label" style="margin-bottom:10px;">Recommendation</label>
+        <div class="recommendation-options" id="recommendationOptions">
+          <label class="rec-option" onclick="selectRec(this,'continue')">
+            <input type="radio" name="recommendation" value="continue">
+            <div>
+              <div class="rec-option-label">Continue as Planned</div>
+              <div class="rec-option-desc">Employee is meeting expectations. Continue standard onboarding and development path.</div>
+            </div>
+          </label>
+          <label class="rec-option" onclick="selectRec(this,'extend')">
+            <input type="radio" name="recommendation" value="extend">
+            <div>
+              <div class="rec-option-label">Extend Probationary Period</div>
+              <div class="rec-option-desc">Additional time and coaching needed before full confirmation. Set clear milestones.</div>
+            </div>
+          </label>
+          <label class="rec-option" onclick="selectRec(this,'raise')">
+            <input type="radio" name="recommendation" value="raise">
+            <div>
+              <div class="rec-option-label">Immediate Raise Authorized</div>
+              <div class="rec-option-desc">Employee exceeded 90-day expectations. Rate adjustment approved (see Manager Override above).</div>
+            </div>
+          </label>
+          <label class="rec-option" onclick="selectRec(this,'release')">
+            <input type="radio" name="recommendation" value="release">
+            <div>
+              <div class="rec-option-label">Release / Separation</div>
+              <div class="rec-option-desc">Employee is not meeting minimum expectations. Coordinate with HR before proceeding.</div>
+            </div>
+          </label>
         </div>
       </div>
-      <div class="advance-check-row" id="advanceCheckRow" style="display:none;">
-        <input type="checkbox" id="advanceCheck" onchange="saveFormState()">
-        <label for="advanceCheck" id="advanceCheckLabel">I recommend advancing this DA to the next tier</label>
+      <div style="margin-bottom:14px;">
+        <label class="field-label">
+          <input type="checkbox" id="advancementCheck" style="width:auto;margin-right:6px;accent-color:var(--earth);">
+          I certify this employee is ready to advance to the next tier
+        </label>
+        <p style="font-size:12px;color:var(--taupe);margin-top:4px;">Check only if Gate B is passed and advancement is agreed upon.</p>
+      </div>
+      <div>
+        <label class="field-label">Overall Comments</label>
+        <textarea id="overallComments" rows="4" placeholder="Summarize the employee's first 90 days. Highlight key wins, outstanding concerns, and the path forward."></textarea>
       </div>
     </div>
   </div>
 
-  <!-- Submit -->
+  <!-- Signatures & Submission -->
   <div class="submit-section">
-    <h2>Submit Review</h2>
-    <p style="font-size:13px;color:var(--taupe);margin-bottom:16px;">
-      Submitting creates a ClickUp approval task and records this review in the system.
+    <h2>Signatures &amp; Submission</h2>
+
+    <div class="section-divider">Employee</div>
+    <div class="sig-block">
+      <div>
+        <label class="field-label">Employee Signature (typed name)</label>
+        <input type="text" id="employeeSig" placeholder="DA types their full name to acknowledge this review">
+      </div>
+      <div>
+        <label class="field-label">Date</label>
+        <input type="date" id="employeeSigDate">
+      </div>
+    </div>
+
+    <div class="section-divider">Office Manager</div>
+    <div class="sig-block">
+      <div>
+        <label class="field-label">OM Signature (typed name)</label>
+        <input type="text" id="omSignature" placeholder="Office Manager types their full name">
+      </div>
+      <div>
+        <label class="field-label">Date</label>
+        <input type="date" id="submitDate">
+      </div>
+    </div>
+
+    <p style="font-size:13px;color:var(--taupe);margin-bottom:4px;">
+      Submitting creates a ClickUp record and emails a summary to leadership.
+      Configure via <strong>Settings</strong> (gear icon, top right).
     </p>
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
-      <button class="draft-btn" id="saveDraftBtn" onclick="saveDraft()">&#128190; Save Draft</button>
+      <button class="preview-pdf-btn" id="previewPdfBtn" onclick="downloadPreviewPDF()">&#128196; Download PDF Preview</button>
+      <button class="preview-pdf-btn" id="saveDraftBtn" onclick="saveDraft()" style="background:#f5f0e8;border-color:#c8b89a;color:#5a4a2a;">&#128190; Save Draft</button>
       <span id="draftSavedNote" style="font-size:12px;color:#888;display:none;"></span>
     </div>
     <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">Submit for Approval</button>
@@ -340,18 +516,54 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--taupe); bor
 </div>
 
 <footer class="site-footer">
+  <img src="logo-white.png" alt="" onerror="this.style.display='none'">
   Smile Haus Dental &nbsp;·&nbsp; DA 90-Day Review System &nbsp;·&nbsp; Confidential
 </footer>
 
-<!-- Reset confirmation modal -->
+<!-- Reset modal -->
 <div class="modal-overlay" id="resetModal" onclick="if(event.target===this)closeResetModal()">
-  <div class="modal" style="text-align:center;">
-    <div style="font-size:36px;margin-bottom:12px;">&#9888;&#65039;</div>
-    <h3>Reset Form?</h3>
-    <p>This will clear all scores, selections, and entered data. This cannot be undone.</p>
-    <div class="modal-actions">
+  <div class="modal" style="max-width:380px;text-align:center;">
+    <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
+    <h3 style="margin:0 0 10px;">Reset Form?</h3>
+    <p style="font-size:14px;color:#877765;margin:0 0 24px;">This will clear all scores, selections, and entered data. This cannot be undone.</p>
+    <div style="display:flex;gap:10px;justify-content:center;">
       <button class="btn-cancel" onclick="closeResetModal()">Cancel</button>
-      <button class="btn-danger" onclick="resetForm()">Yes, Reset</button>
+      <button onclick="resetForm()" style="font-family:var(--font-body);font-size:13px;font-weight:600;background:#c0392b;color:#fff;border:none;border-radius:var(--radius);padding:8px 22px;cursor:pointer;">Yes, Reset Everything</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div class="modal-overlay" id="settingsModal" onclick="if(event.target===this)closeSettings()">
+  <div class="modal">
+    <h3>&#9881; Settings</h3>
+    <p class="modal-hint">Worker URL is pre-configured. Only change if redirected by IT.</p>
+    <div class="modal-section-label">Backend Worker URL</div>
+    <div class="modal-field"><label class="field-label">Worker URL</label><input type="text" id="cfg_worker_url" placeholder="https://sh-da-review-worker.smilehaus.workers.dev/submit"></div>
+    <div style="margin-top:8px;">
+      <button class="btn-cancel" id="cuTestBtn" onclick="testWorker()" style="font-size:12px;padding:5px 12px;">&#128337; Test Connection</button>
+      <div id="cuTestResult" style="font-size:12px;margin-top:6px;"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-save" onclick="saveSettings()">Save</button>
+      <button class="btn-cancel" onclick="closeSettings()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- PIN modal -->
+<div class="modal-overlay" id="pinModal" onclick="if(event.target===this)closePinModal()">
+  <div class="modal" style="max-width:340px;">
+    <h3>&#9998; Edit Form</h3>
+    <p class="modal-hint">Enter the PIN to unlock editing.</p>
+    <div class="modal-field">
+      <label class="field-label">PIN</label>
+      <input type="password" id="pinInput" placeholder="••••••••••••" onkeydown="if(event.key==='Enter')submitPin()" autocomplete="off">
+      <div class="pin-error" id="pinError">Incorrect PIN. Try again.</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-save" onclick="submitPin()">Unlock</button>
+      <button class="btn-cancel" onclick="closePinModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -359,62 +571,753 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--taupe); bor
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── CONSTANTS ────────────────────────────────────────────────────────────────
+// ─── DATA ────────────────────────────────────────────────────────────────────
 
-const WORKER_BASE = 'https://sh-da-review-worker.smilehaus.workers.dev';
-const DRAFT_ID_KEY = 'sh_da_90day_draft_id';
-const SAVE_KEY = 'sh_da_90day_form';
-
-// ─── TIER DATA ────────────────────────────────────────────────────────────────
-
-const TIERS = {
-  T1: { label: 'Entry — Just Graduated', rate: '$17/hr', next: 'T2',
-    skills: ['Willing to train full-time; accepts shadowing role', 'Able to run sterilization independently'] },
-  T2: { label: 'Entry-Level Solo Assist', rate: '$18–19/hr', next: 'T3',
-    skills: ['Able to take good-quality FMX', 'Able to chart notes, existings, and treatment in dental software', 'Able to assist solo in all exams and fillings', 'Knows all tooth numbers', 'Knows all basic instruments and dental supplies'] },
-  T3: { label: 'Crown & Bridge Proficient', rate: '$19–20/hr', next: 'T4',
-    skills: ['All T2 competencies confirmed', 'Able to assist solo in all crown and bridge procedures', 'Able to make a single temporary crown', 'Holds a coronal polishing certificate', 'Able to complete a full iTero scan in under 4 minutes'] },
-  T4: { label: 'Advanced DA', rate: '$21–22/hr', next: 'T5',
-    skills: ['All T3 competencies confirmed', 'Able to make multiple / consecutive temporary crowns', 'Able to assist root canals, surgical procedures, and implants', 'Able to present simple treatment plans', 'Able to present orthodontic / Invisalign simulation', 'Knows every instrument and supply for every procedure', 'Familiar with all medical alerts and accommodations'] },
-  T5: { label: 'Lead DA', rate: '$23–24/hr', next: 'T6',
-    skills: ['All T4 competencies confirmed', '2+ years dental assisting experience', 'Places sealants without fall-out or bite adjustments', 'Packs cord proficiently', 'Performs orthodontic procedures (attachments, IPR)', 'Performs in-office whitening', 'Runs and leads the entire back office', 'Writes accurate, detailed progress notes', 'Manages inventory', 'Cross-trained in simple front admin duties'] },
-  T6: { label: 'Senior DA', rate: '$25–26/hr', next: 'T7',
-    skills: ['All T5 competencies confirmed', 'Adjusts dentures / partials / crowns successfully', 'Handles complex FD duties (EOD, claims, billing)', 'Trains other DAs in-office or at other Smile Haus offices'] },
-  T7: { label: 'Lead Senior DA', rate: '$27+/hr', next: null,
-    skills: ['All T6 competencies confirmed', 'Performs most complex front office and back office duties'] },
+const TIERS_STANDARD = {
+  T1: { floor:17,  ceiling:17,  next:'T2', label:'Entry — Just Graduated',     rate:'$17/hr'    },
+  T2: { floor:18,  ceiling:19,  next:'T3', label:'Entry-Level Solo Assist',     rate:'$18–19/hr' },
+  T3: { floor:20,  ceiling:21,  next:'T4', label:'Crown & Bridge Proficient',   rate:'$20–21/hr' },
+  T4: { floor:22,  ceiling:24,  next:'T5', label:'Multi-Temps, Surgery & Tx',  rate:'$22–24/hr' },
+  T5: { floor:25,  ceiling:26,  next:'T6', label:'Back-Office Lead (2+ yrs)',   rate:'$25–26/hr' },
+  T6: { floor:27,  ceiling:29,  next:'T7', label:'Cross-Trained FD & Trainer', rate:'$27–29/hr' },
+  T7: { floor:30,  ceiling:999, next:null, label:'Complex Tx, OM Coverage',    rate:'$30+/hr'   },
+};
+const TIERS_NBDA = {
+  T1: { floor:17,  ceiling:17,  next:'T2', label:'Entry — Just Graduated',     rate:'$17/hr'    },
+  T2: { floor:18,  ceiling:18,  next:'T3', label:'Entry-Level Solo Assist',     rate:'$18/hr'    },
+  T3: { floor:19,  ceiling:20,  next:'T4', label:'Crown & Bridge Proficient',   rate:'$19–20/hr' },
+  T4: { floor:21,  ceiling:22,  next:'T5', label:'Multi-Temps, Surgery & Tx',  rate:'$21–22/hr' },
+  T5: { floor:23,  ceiling:24,  next:'T6', label:'Back-Office Lead (2+ yrs)',   rate:'$23–24/hr' },
+  T6: { floor:25,  ceiling:26,  next:'T7', label:'Cross-Trained FD & Trainer', rate:'$25–26/hr' },
+  T7: { floor:27,  ceiling:29,  next:null, label:'Complex Tx, OM Coverage',    rate:'$27–29/hr' },
 };
 
-const PERF_CATS = [
-  { id: 'clinical',       label: 'Clinical Skills & Technique' },
-  { id: 'attitude',       label: 'Attitude & Professionalism' },
-  { id: 'reliability',    label: 'Reliability & Attendance' },
-  { id: 'communication',  label: 'Team Communication & Collaboration' },
-  { id: 'sop',            label: 'SOP & Infection Control Compliance' },
-  { id: 'coachability',   label: 'Willingness to Learn & Coachability' },
+function getActiveTiers() {
+  const office = document.getElementById('homeOffice')?.value;
+  return office === 'New Braunfels Dental Arts' ? TIERS_NBDA : TIERS_STANDARD;
+}
+
+const TIER_SKILLS = {
+  T1: [
+    'Willing to train full-time; accepts shadowing role',
+    'Able to run sterilization independently',
+  ],
+  T2: [
+    'Able to take good-quality FMX',
+    'Able to chart notes, existings, and treatment in dental software',
+    'Able to assist solo in all exams and fillings',
+    'Knows all tooth numbers',
+    'Knows all basic instruments and dental supplies',
+  ],
+  T3: [
+    'All T2 competencies confirmed (see T2 above)',
+    'Able to assist solo in all crown and bridge procedures',
+    'Able to make a single temporary crown',
+    'Holds a coronal polishing certificate',
+    'Able to complete a full iTero scan in under 4 minutes',
+  ],
+  T4: [
+    'All T3 competencies confirmed (see T3 above)',
+    'Able to make multiple / consecutive temporary crowns that hold until next appt',
+    'Able to assist root canals, surgical procedures, and implants',
+    'Able to present simple treatment plans (fillings, crowns)',
+    'Able to present orthodontic / Invisalign before-after simulation',
+    'Knows every instrument and supply for every procedure in-office',
+    'Familiar with all medical alerts and accommodations',
+  ],
+  T5: [
+    'All T4 competencies confirmed (see T4 above)',
+    '2+ years dental assisting experience',
+    'Places sealants without fall-out or bite adjustments',
+    'Packs cord proficiently',
+    'Performs orthodontic procedures (attachments, IPR)',
+    'Performs in-office whitening (Opalescence, Zoom, etc.)',
+    'Runs and leads the entire back office; single-column assist; labs; charting; sterilization',
+    'Writes accurate, detailed progress notes; helpful appt notes / prep reminders',
+    'Manages inventory; knows every supply source',
+    'Proficient in minimal sedation techniques (nitrous, etc.)',
+    'Cross-trained in simple front admin duties (check-in/out, payments, confirm, schedule-fill)',
+  ],
+  T6: [
+    'All T5 competencies confirmed (see T5 above)',
+    'Adjusts dentures / partials / crowns successfully',
+    'Handles complex FD duties (EOD, claims, simple billing, FD coverage)',
+    'Trains other DAs in-office or at other Smile Haus offices',
+  ],
+  T7: [
+    'All T6 competencies confirmed (see T6 above)',
+    'Performs most complex front office and back office duties',
+    'Creates complex treatment plans incl. all implant types (all-on-X, grafts, membranes)',
+    'Trains other Front Desk staff in-office',
+    'Insurance knowledge; explains benefits to patients',
+    'Processes EOBs',
+    'Works as OM coverage',
+  ],
+};
+
+const KPIS = [
+  { id:'kpi1', name:'Daily Adjusted Production', sub:'Office goal', target:'Hit goal' },
+  { id:'kpi2', name:'New Patients / Month', sub:'Team metric', target:'≥ 30' },
+  { id:'kpi3', name:'Reviews Received / Month', sub:'Team metric', target:'≥ 40' },
+  { id:'kpi4', name:'Doctor Case Acceptance', sub:'Chairside support', target:'≥ 45%' },
+  { id:'kpi5', name:'Room Turnover Time', sub:'Setup to ready', target:'≤ 8 min' },
+  { id:'kpi6', name:'Sterilization & Infection Control', sub:'', target:'100%' },
+  { id:'kpi7', name:'Radiograph Quality', sub:'Diagnostic on 1st take', target:'≥ 95%' },
+  { id:'kpi8', name:'iTero Scan Proficiency', sub:'N/A if not applicable', target:'≥ 90%', optional:true },
+  { id:'kpi9', name:'Doctor Schedule Adherence', sub:'Keeps Dr. on time', target:'≥ 90%' },
 ];
 
-// ─── STATE ────────────────────────────────────────────────────────────────────
+const PERF_CATS = [
+  { id:'p1', name:'Clinical Skills & Procedure Proficiency',
+    desc:'Ability to assist in procedures appropriate to their training level. Setup accuracy, instrument knowledge, chairside technique.' },
+  { id:'p2', name:'Infection Control & Safety Compliance',
+    desc:'Consistent adherence to sterilization protocols, OSHA standards, and Smile Haus SOPs without prompting.' },
+  { id:'p3', name:'Team Integration & Communication',
+    desc:'Communicates proactively with doctors, hygiene, and front desk. Asks appropriate questions, gives clear handoffs.' },
+  { id:'p4', name:'Attitude, Motivation & Professionalism',
+    desc:'Shows up on time, maintains positive energy, dressed appropriately. Willing to do what is needed. No drama.' },
+  { id:'p5', name:'Adaptability & Willingness to Learn',
+    desc:'Receives coaching without defensiveness. Adjusts to new workflows. Applies corrections on the first try.' },
+  { id:'p6', name:'Patient Care & Chairside Manner',
+    desc:'Interacts warmly with patients, explains procedures simply, helps calm nervous patients. Represents the office well.' },
+];
 
-const perfScores = {}; // { id: 0–5 }
-const skillStates = {}; // { 'T1_0': 'achieved'|'progressing'|'not-yet' }
-const goalChecks = {};  // { 'T2_0': true|false }
+// ─── STATE ───────────────────────────────────────────────────────────────────
 
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const scores = {};
+const skillState = {};
+let formLocked = false;
 
-function getConfig() { return { workerUrl: WORKER_BASE + '/submit' }; }
+// ─── RENDER: KPIs ────────────────────────────────────────────────────────────
 
-function showToast(msg, type = '') {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast show ' + type;
-  setTimeout(() => { t.className = 'toast'; }, 5000);
+function renderKPIs() {
+  document.getElementById('kpiBody').innerHTML = KPIS.map(k => `
+    <tr>
+      <td>
+        <div class="kpi-name" contenteditable="true" data-editable id="kpiName_${k.id}">${k.name}</div>
+        ${k.sub ? `<div class="kpi-sub" contenteditable="true" data-editable id="kpiSub_${k.id}">${k.sub}</div>` : ''}
+      </td>
+      <td style="text-align:center;">
+        <input class="kpi-target-input" id="kpiTarget_${k.id}" value="${k.target}" disabled>
+      </td>
+      <td>
+        <div class="score-group">
+          ${[1,2,3,4,5].map(v => `<button class="score-btn" data-id="${k.id}" data-val="${v}" onclick="setScore('${k.id}',${v})">${v}</button>`).join('')}
+          ${k.optional ? `<button class="score-na" data-id="${k.id}" data-val="na" onclick="setScore('${k.id}','na')" style="width:38px;height:34px;border:1.5px solid var(--sandstone);background:var(--white);border-radius:var(--radius);cursor:pointer;font-family:var(--font-body);font-size:11px;font-weight:500;color:var(--taupe);transition:all 0.12s;">N/A</button>` : ''}
+        </div>
+      </td>
+    </tr>`).join('');
 }
 
-function showDraftNote(msg) {
-  const el = document.getElementById('draftSavedNote');
-  if (el) { el.textContent = msg; el.style.display = msg ? 'inline' : 'none'; }
+// ─── RENDER: Performance ─────────────────────────────────────────────────────
+
+function renderPerf() {
+  document.getElementById('perfBody').innerHTML = PERF_CATS.map(cat => `
+    <tr>
+      <td>
+        <div class="crit-name" contenteditable="true" data-editable id="critName_${cat.id}">${cat.name}</div>
+        <div class="crit-desc" contenteditable="true" data-editable id="critDesc_${cat.id}">${cat.desc}</div>
+      </td>
+      <td>
+        <div class="score-group">
+          ${[1,2,3,4,5].map(v => `<button class="score-btn" data-id="${cat.id}" data-val="${v}" onclick="setScore('${cat.id}',${v})">${v}</button>`).join('')}
+        </div>
+      </td>
+    </tr>`).join('');
 }
 
-// ─── AUTH / DRAFT HELPERS ─────────────────────────────────────────────────────
+// ─── RENDER: Tier Checklist ───────────────────────────────────────────────────
+
+function renderTierAccordion() {
+  const accordion = document.getElementById('tierAccordion');
+  const tierKeys = ['T1','T2','T3','T4','T5','T6','T7'];
+  const tiers = TIERS_STANDARD;
+  accordion.innerHTML = tierKeys.map(key => {
+    const tier = tiers[key];
+    const skills = TIER_SKILLS[key];
+    return `
+    <div class="tier-row" id="tierRow_${key}">
+      <div class="tier-header" id="tierToggle_${key}">
+        <div class="tier-header-left">
+          <span class="tier-badge" id="tierBadge_${key}">${key}</span>
+          <span class="tier-title" contenteditable="true" data-editable id="tierTitle_${key}">${tier.label}</span>
+          <span class="tier-rate" id="tierRate_${key}">${tier.rate}</span>
+          <span class="tier-gate-status" id="tierGateStatus_${key}"></span>
+        </div>
+        <div class="tier-header-right">
+          <button class="pass-all-btn" id="passAllBtn_${key}" onclick="passAllSkills('${key}')">✓ Pass All</button>
+          <button class="fail-all-btn" id="failAllBtn_${key}" onclick="failAllSkills('${key}')">✗ Not Yet Passed</button>
+          <button class="tier-expand-btn" id="tierChevron_${key}" onclick="toggleTier('${key}')" title="Expand/collapse">›</button>
+        </div>
+      </div>
+      <div class="tier-body" id="tierBody_${key}">
+        ${skills.map((skill, idx) => `
+          <div class="skill-row">
+            <span class="skill-name" contenteditable="true" data-editable id="skillName_${key}_${idx}">${skill}</span>
+            <div class="skill-btns">
+              <button class="skill-btn" id="skill_${key}_${idx}_can" title="Can do" onclick="setSkill('${key}',${idx},'can')">✓</button>
+              <button class="skill-btn" id="skill_${key}_${idx}_cannot" title="Cannot do" onclick="setSkill('${key}',${idx},'cannot')">✗</button>
+            </div>
+            <button class="skill-delete-btn" title="Remove this skill" onclick="deleteSkill(this)">🗑</button>
+          </div>`).join('')}
+        <div class="add-skill-row" style="padding:6px 12px 10px;">
+          <button class="add-skill-btn" onclick="addSkill('${key}')">+ Add skill / job task</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── SCORING ─────────────────────────────────────────────────────────────────
+
+function setScore(id, val) {
+  scores[id] = val === 'na' ? 'na' : parseInt(val);
+  document.querySelectorAll(`[data-id="${id}"]`).forEach(btn => {
+    btn.classList.toggle('active', String(btn.dataset.val) === String(val));
+  });
+  recalc();
+  saveFormState();
+}
+
+function passAllSkills(tierKey) {
+  const indices = getSkillIndices(tierKey);
+  const allAlreadyPassed = indices.every(idx => skillState[`${tierKey}_${idx}`] === 'can');
+  indices.forEach(idx => {
+    skillState[`${tierKey}_${idx}`] = allAlreadyPassed ? null : 'can';
+    const canBtn    = document.getElementById(`skill_${tierKey}_${idx}_can`);
+    const cannotBtn = document.getElementById(`skill_${tierKey}_${idx}_cannot`);
+    if (canBtn)    canBtn.className    = 'skill-btn' + (!allAlreadyPassed ? ' can-do' : '');
+    if (cannotBtn) cannotBtn.className = 'skill-btn';
+  });
+  const btn = document.getElementById(`passAllBtn_${tierKey}`);
+  if (btn) btn.classList.toggle('all-passed', !allAlreadyPassed);
+  recalc(); saveFormState();
+}
+
+function failAllSkills(tierKey) {
+  const indices = getSkillIndices(tierKey);
+  const allAlreadyFailed = indices.every(idx => skillState[`${tierKey}_${idx}`] === 'cannot');
+  indices.forEach(idx => {
+    skillState[`${tierKey}_${idx}`] = allAlreadyFailed ? null : 'cannot';
+    const canBtn    = document.getElementById(`skill_${tierKey}_${idx}_can`);
+    const cannotBtn = document.getElementById(`skill_${tierKey}_${idx}_cannot`);
+    if (canBtn)    canBtn.className = 'skill-btn';
+    if (cannotBtn) cannotBtn.className = 'skill-btn' + (!allAlreadyFailed ? ' cannot-do' : '');
+  });
+  const btn = document.getElementById(`failAllBtn_${tierKey}`);
+  if (btn) btn.classList.toggle('all-failed', !allAlreadyFailed);
+  const passBtn = document.getElementById(`passAllBtn_${tierKey}`);
+  if (passBtn) passBtn.classList.remove('all-passed');
+  recalc(); saveFormState();
+}
+
+function addSkill(tierKey) {
+  const tbody = document.getElementById(`tierBody_${tierKey}`);
+  const idx = tbody.querySelectorAll('.skill-row').length;
+  const row = document.createElement('div');
+  row.className = 'skill-row';
+  row.innerHTML = `
+    <span class="skill-name" contenteditable="true" data-editable id="skillName_${tierKey}_${idx}"></span>
+    <div class="skill-btns">
+      <button class="skill-btn" id="skill_${tierKey}_${idx}_can" title="Can do" onclick="setSkill('${tierKey}',${idx},'can')">✓</button>
+      <button class="skill-btn" id="skill_${tierKey}_${idx}_cannot" title="Cannot do" onclick="setSkill('${tierKey}',${idx},'cannot')">✗</button>
+    </div>
+    <button class="skill-delete-btn" title="Remove this skill" onclick="deleteSkill(this)">🗑</button>`;
+  const addRow = tbody.querySelector('.add-skill-row');
+  tbody.insertBefore(row, addRow);
+  if (!tbody.classList.contains('open')) toggleTier(tierKey);
+  autoSaveCustomSkills();
+  setTimeout(() => document.getElementById(`skillName_${tierKey}_${idx}`)?.focus(), 50);
+}
+
+function deleteSkill(btn) {
+  const row = btn.closest('.skill-row');
+  if (!row) return;
+  const nameEl = row.querySelector('.skill-name');
+  if (nameEl?.id) {
+    const parts = nameEl.id.split('_');
+    if (parts.length >= 3) delete skillState[`${parts[1]}_${parts[2]}`];
+  }
+  row.remove();
+  autoSaveCustomSkills();
+  saveFormState();
+}
+
+function setSkill(tierKey, idx, state) {
+  const k = `${tierKey}_${idx}`;
+  skillState[k] = skillState[k] === state ? null : state;
+  const canBtn    = document.getElementById(`skill_${tierKey}_${idx}_can`);
+  const cannotBtn = document.getElementById(`skill_${tierKey}_${idx}_cannot`);
+  if (canBtn)    canBtn.className    = 'skill-btn' + (skillState[k] === 'can'    ? ' can-do'    : '');
+  if (cannotBtn) cannotBtn.className = 'skill-btn' + (skillState[k] === 'cannot' ? ' cannot-do' : '');
+  recalc();
+  saveFormState();
+}
+
+function toggleTier(key) {
+  const body = document.getElementById(`tierBody_${key}`);
+  const chevron = document.getElementById(`tierChevron_${key}`);
+  body.classList.toggle('open');
+  chevron.classList.toggle('open');
+}
+
+// ─── CALCULATION ─────────────────────────────────────────────────────────────
+
+function getSkillIndices(tierKey) {
+  const body = document.getElementById(`tierBody_${tierKey}`);
+  if (!body) return TIER_SKILLS[tierKey].map((_, i) => i);
+  const indices = [];
+  body.querySelectorAll(`[id^="skill_${tierKey}_"][id$="_can"]`).forEach(btn => {
+    const m = btn.id.match(new RegExp(`skill_${tierKey}_(\\d+)_can`));
+    if (m) indices.push(parseInt(m[1]));
+  });
+  return indices.length ? indices : TIER_SKILLS[tierKey].map((_, i) => i);
+}
+
+function getTierGateStatus(tierKey) {
+  const indices = getSkillIndices(tierKey);
+  let allPass = true, anyFail = false;
+  indices.forEach(idx => {
+    const state = skillState[`${tierKey}_${idx}`];
+    if (state === 'can') { /* good */ }
+    else if (state === 'cannot') { anyFail = true; allPass = false; }
+    else { allPass = false; }
+  });
+  if (allPass && indices.length > 0) return 'pass';
+  if (anyFail) return 'fail';
+  return 'incomplete';
+}
+
+function recalc() {
+  // Part I — KPIs (up to 45 pts, N/A skipped)
+  let p1 = 0, p1Max = 0;
+  KPIS.forEach(k => {
+    if (scores[k.id] === 'na') return;
+    p1Max += 5;
+    if (scores[k.id]) p1 += scores[k.id];
+  });
+  if (p1Max === 0) p1Max = 45;
+
+  // Part II — 6 categories (up to 30 pts)
+  let p2 = 0;
+  PERF_CATS.forEach(cat => { p2 += scores[cat.id] || 0; });
+
+  document.getElementById('kpiSubtotal').textContent = p1;
+  document.getElementById('kpiDenom').textContent = p1Max;
+  document.getElementById('p1Header').textContent = `/ ${p1Max} pts`;
+  document.getElementById('p2Subtotal').textContent = p2;
+
+  // Gate logic
+  const tierKey = document.getElementById('currentTier').value;
+  const tier = getActiveTiers()[tierKey];
+  const tierKeys = ['T1','T2','T3','T4','T5','T6','T7'];
+
+  tierKeys.forEach(k => {
+    const toggle = document.getElementById(`tierToggle_${k}`);
+    const badge = document.getElementById(`tierBadge_${k}`);
+    const statusEl = document.getElementById(`tierGateStatus_${k}`);
+    if (!toggle) return;
+    toggle.className = 'tier-header' + (k === tierKey ? ' current-tier' : tier && tier.next === k ? ' next-tier' : '');
+    badge.className = 'tier-badge' + (k === tierKey ? ' current' : tier && tier.next === k ? ' next' : '');
+    const gs = getTierGateStatus(k);
+    statusEl.className = 'tier-gate-status ' + (gs === 'pass' ? 'gate-pass' : gs === 'fail' ? 'gate-fail' : '');
+    statusEl.textContent = gs === 'pass' ? '✓ Pass' : gs === 'fail' ? '✗ Not Yet Passed' : '';
+    const passBtn = document.getElementById(`passAllBtn_${k}`);
+    if (passBtn) passBtn.classList.toggle('all-passed', gs === 'pass');
+  });
+
+  let gateA = false, gateBResult = false, highestPromoTier = null;
+  if (tier) {
+    const currentIdx = tierKeys.indexOf(tierKey);
+    const tiersForA = tierKeys.slice(0, currentIdx + 1);
+    gateA = tiersForA.every(k => getTierGateStatus(k) === 'pass');
+
+    let promoIdx = currentIdx + 1;
+    while (promoIdx < tierKeys.length) {
+      if (getTierGateStatus(tierKeys[promoIdx]) === 'pass') { highestPromoTier = tierKeys[promoIdx]; promoIdx++; }
+      else break;
+    }
+    gateBResult = highestPromoTier !== null;
+  }
+
+  const gateABox = document.getElementById('gateABox');
+  const gateBBox = document.getElementById('gateBBox');
+  const gateAStatus = document.getElementById('gateAStatus');
+  const gateBStatus = document.getElementById('gateBStatus');
+  const gateASub = document.getElementById('gateASub');
+  const gateBSub = document.getElementById('gateBSub');
+
+  if (!tier) {
+    gateABox.className = 'gate-box incomplete'; gateAStatus.textContent = 'Select tier above';
+    gateBBox.className = 'gate-box incomplete'; gateBStatus.textContent = 'Select tier above';
+    gateASub.textContent = 'Required for advancement';
+    gateBSub.textContent = 'Required for promotion';
+  } else {
+    gateABox.className = 'gate-box ' + (gateA ? 'pass' : 'fail');
+    gateAStatus.textContent = gateA ? '✓ Passed' : '✗ Not Yet Passed';
+    gateASub.textContent = gateA ? 'Current tier mastery confirmed' : `Complete all ${tierKey} (and below) skills`;
+
+    if (tier.next) {
+      gateBBox.className = 'gate-box ' + (gateBResult ? 'pass' : 'fail');
+      gateBStatus.textContent = gateBResult ? '✓ Passed' : '✗ Not Yet Passed';
+      gateBSub.textContent = gateBResult
+        ? `Promotion to ${highestPromoTier} eligible`
+        : `Complete all ${tier.next} skills to promote`;
+    } else {
+      gateBBox.className = 'gate-box incomplete';
+      gateBStatus.textContent = 'Highest tier';
+      gateBSub.textContent = 'No further tier advancement';
+    }
+  }
+}
+
+// ─── OVERRIDE ────────────────────────────────────────────────────────────────
+
+function toggleOverride() {
+  const cb   = document.getElementById('overrideCheck');
+  const body = document.getElementById('overrideBody');
+  const badge = document.getElementById('overrideBadge');
+  const box  = document.getElementById('overrideBox');
+  if (event && event.target !== cb) cb.checked = !cb.checked;
+  const on = cb.checked;
+  body.classList.toggle('open', on);
+  badge.textContent = on ? 'Active' : 'Off';
+  badge.style.color = on ? '#e87770' : '';
+  box.style.borderColor = on ? '#e87770' : '';
+  saveFormState();
+}
+
+function onOverrideChange() {
+  const newRate = parseFloat(document.getElementById('overrideNewRate').value) || 0;
+  const currentRate = parseFloat(document.getElementById('currentRate').value) || 0;
+  const el = document.getElementById('overrideRaiseSummary');
+  if (newRate > 0 && currentRate > 0 && newRate > currentRate) {
+    const diff = (newRate - currentRate).toFixed(2);
+    el.textContent = `+$${diff}/hr increase from current rate`;
+    el.style.color = '#2d6a3f';
+  } else if (newRate > 0 && currentRate > 0 && newRate <= currentRate) {
+    el.textContent = 'New rate must be higher than current rate';
+    el.style.color = '#c0392b';
+  } else {
+    el.textContent = '';
+  }
+  saveFormState();
+}
+
+// ─── RECOMMENDATION ───────────────────────────────────────────────────────────
+
+function selectRec(el, val) {
+  document.querySelectorAll('.rec-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  saveFormState();
+}
+
+// ─── OFFICE / TIER ────────────────────────────────────────────────────────────
+
+function onOfficeChange() {
+  const tiers = getActiveTiers();
+  const keys = ['T1','T2','T3','T4','T5','T6','T7'];
+  const labels = [
+    'Entry, Just Graduated', 'Solo Assisting', 'Crown &amp; Bridge',
+    'Multi-Temps, Surgery', 'Back-Office Lead', 'FD Coverage &amp; Trainer', 'Complex Tx, OM Coverage',
+  ];
+  keys.forEach(k => {
+    const el = document.getElementById(`tierRate_${k}`);
+    if (el) el.textContent = tiers[k].rate;
+  });
+  const tierSel = document.getElementById('currentTier');
+  const selectedVal = tierSel.value;
+  tierSel.innerHTML = `<option value="">— Select tier —</option>` +
+    keys.map((k, i) => `<option value="${k}">${k} — ${tiers[k].rate} — ${labels[i]}</option>`).join('');
+  tierSel.value = selectedVal;
+  recalc();
+  saveFormState();
+}
+
+function onTierChange() {
+  document.getElementById('tierAutoLabel').textContent = '';
+  recalc();
+  saveFormState();
+}
+
+// ─── SUBMIT ───────────────────────────────────────────────────────────────────
+
+async function downloadPreviewPDF() {
+  const btn = document.getElementById('previewPdfBtn');
+  btn.disabled = true; btn.textContent = 'Generating…';
+  try {
+    if (!window.jspdf || typeof html2canvas === 'undefined') { showToast('PDF libraries not loaded — check internet connection.', 'error'); return; }
+    const summary = buildSummary();
+    const b64 = await generatePDF(summary);
+    if (!b64 || b64.length < 100) { showToast('PDF came out empty — check console for errors.', 'error'); return; }
+    const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const daName = document.getElementById('daName')?.value?.trim() || 'DA';
+    const date = document.getElementById('reviewDate')?.value || new Date().toISOString().slice(0,10);
+    a.href = url; a.download = `DA_90Day_Review_${daName.replace(/\s+/g,'_')}_${date}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('PDF downloaded.', 'success');
+  } catch(e) {
+    console.error('PDF preview error:', e);
+    showToast('PDF generation failed: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = '📄 Download PDF Preview';
+  }
+}
+
+async function handleSubmit() {
+  const daName = document.getElementById('daName').value.trim();
+  const office = document.getElementById('homeOffice').value;
+  const tier   = document.getElementById('currentTier').value;
+  const omSig  = document.getElementById('omSignature').value.trim();
+  if (!daName || !office || !tier || !omSig) {
+    showToast('Fill in DA Name, Office, Tier, and OM Signature before submitting.', 'error'); return;
+  }
+  const cfg = getConfig();
+  if (!cfg.workerUrl) { showToast('Worker URL not configured. Contact IT.', 'error'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  const summary = buildSummary();
+  let emailOk = false, clickupOk = false;
+
+  try {
+    btn.textContent = 'Generating PDF…';
+    let formPdfB64 = null, formHtmlB64 = null, ext = 'html';
+    try { formPdfB64 = await generatePDF(summary); ext = 'pdf'; }
+    catch(e) { console.warn('PDF generation failed, using HTML snapshot:', e); formHtmlB64 = buildFormSnapshot(summary); }
+
+    const reviewDate = document.getElementById('reviewDate')?.value || new Date().toISOString().slice(0,10);
+    const taskName = `DA 90-Day Review — ${daName} — ${office} — ${reviewDate}`;
+    const taskBody = JSON.stringify({ name: taskName, description: summary.text, priority: 2 });
+
+    const formState = { _scores: {...scores}, _skillState: {...skillState}, _dynamicSkills: {} };
+    document.querySelectorAll('.main [id], .submit-section [id]').forEach(el => {
+      if ((el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') && el.id && el.id !== 'pinInput') formState[el.id] = el.value;
+    });
+    document.querySelectorAll('[data-editable][id]').forEach(el => { formState[el.id] = el.textContent; });
+    const recEl = document.querySelector('input[name="recommendation"]:checked');
+    if (recEl) formState._recommendation = recEl.value;
+
+    btn.textContent = 'Submitting…';
+    const jwt = getAuthJwt();
+    const submitHeaders = { 'Content-Type': 'application/json' };
+    if (jwt) submitHeaders['Authorization'] = 'Bearer ' + jwt;
+
+    const res = await fetch(cfg.workerUrl, {
+      method: 'POST',
+      headers: submitHeaders,
+      body: JSON.stringify({
+        task_name: taskName,
+        task_body: taskBody,
+        da_name: daName, office, tier,
+        review_date: reviewDate,
+        form_type: 'da_90day',
+        reviewer: document.getElementById('reviewerName')?.value || '—',
+        summary: summary.text,
+        form_pdf_b64:  formPdfB64,
+        form_html_b64: formHtmlB64,
+        form_filename: `DA_90Day_Review_${daName.replace(/\s+/g,'_')}_${reviewDate}.${ext}`,
+        draft_id: getDraftId() || undefined,
+        form_state: formState,
+      }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      clickupOk = !!data.clickup_ok;
+      emailOk   = !!data.email_ok;
+      if (data.errors?.length) console.warn('Worker errors:', data.errors);
+      clearDraftId();
+      showDraftNote('');
+    } else {
+      const errText = await res.text().catch(() => res.status);
+      console.error('Worker responded', res.status, errText);
+    }
+  } catch(e) {
+    console.error('Submit error:', e);
+  }
+
+  btn.disabled = false; btn.textContent = 'Submit for Approval';
+  const parts = [];
+  if (clickupOk) parts.push('ClickUp task created ✓'); else parts.push('ClickUp: failed — check console');
+  if (emailOk) parts.push('Email sent ✓'); else parts.push('Email pending');
+  showToast(parts.join('  ·  '), clickupOk ? 'success' : 'error');
+}
+
+function buildSummary() {
+  const f = id => document.getElementById(id)?.value || '—';
+  const daName = f('daName'), office = f('homeOffice'), tier = f('currentTier');
+  const rate = f('currentRate'), reviewDate = f('reviewDate'), reviewer = f('reviewerName');
+  const omSig = f('omSignature'), empSig = f('employeeSig');
+  const kpiTotal = document.getElementById('kpiSubtotal')?.textContent || '0';
+  const kpiMax   = document.getElementById('kpiDenom')?.textContent || '45';
+  const p2Total  = document.getElementById('p2Subtotal')?.textContent || '0';
+  const gateA = document.getElementById('gateAStatus')?.textContent || '—';
+  const gateB = document.getElementById('gateBStatus')?.textContent || '—';
+  const strengths = f('strengths'), growth = f('growthAreas'), goals = f('goals');
+  const overall = f('overallComments');
+  const recEl = document.querySelector('input[name="recommendation"]:checked');
+  const recommendation = recEl ? recEl.value : '—';
+  const ov = getOverrideData();
+
+  const text = [
+    'DA 90-DAY REVIEW — SUMMARY',
+    '═══════════════════════════════════════════',
+    `DA: ${daName}  |  Office: ${office}  |  Tier: ${tier}  |  Rate: $${rate}/hr`,
+    `Review Date: ${reviewDate}  |  Reviewer: ${reviewer}`,
+    '',
+    'SCORES',
+    `  Part I  — KPI Performance:           ${kpiTotal} / ${kpiMax}`,
+    `  Part II — 90-Day Performance Eval:   ${p2Total} / 30`,
+    '',
+    'GATES',
+    `  Gate A (Current Tier Mastery): ${gateA}`,
+    `  Gate B (Next Tier Mastery):    ${gateB}`,
+    '',
+    'RECOMMENDATION',
+    `  ${recommendation}`,
+    ...(ov.active ? [
+      '',
+      '⚠ MANAGER OVERRIDE — IMMEDIATE RAISE AUTHORIZED',
+      `  New Rate: $${ov.newRate}/hr`,
+      `  Effective Date: ${ov.effectiveDate || 'TBD'}`,
+      ov.comment ? `  Justification: ${ov.comment}` : '',
+    ] : []),
+    '',
+    'FEEDBACK',
+    `  Strengths: ${strengths}`,
+    `  Growth Areas: ${growth}`,
+    `  90-Day Goals: ${goals}`,
+    '',
+    'OVERALL COMMENTS',
+    `  ${overall}`,
+    '',
+    `Employee Signature: ${empSig}  |  OM Signature: ${omSig}`,
+    `Submitted: ${new Date().toLocaleDateString()}`,
+  ].join('\n');
+
+  const html = `
+<div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;color:#2A2E31;">
+  <div style="background:#2A2E31;padding:20px 24px;">
+    <div style="color:#F2EFE8;font-family:Georgia,serif;font-size:20px;font-weight:300;">DA 90-Day Review — Summary</div>
+  </div>
+  <div style="padding:24px;background:#F2EFE8;">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:20px;font-size:14px;">
+      <tr><td style="padding:7px 10px;font-weight:600;color:#877765;width:130px;">DA</td><td style="padding:7px 10px;">${daName}</td></tr>
+      <tr style="background:#fff"><td style="padding:7px 10px;font-weight:600;color:#877765;">Office</td><td style="padding:7px 10px;">${office}</td></tr>
+      <tr><td style="padding:7px 10px;font-weight:600;color:#877765;">Tier</td><td style="padding:7px 10px;">${tier} · $${rate}/hr</td></tr>
+      <tr style="background:#fff"><td style="padding:7px 10px;font-weight:600;color:#877765;">Review Date</td><td style="padding:7px 10px;">${reviewDate}</td></tr>
+      <tr><td style="padding:7px 10px;font-weight:600;color:#877765;">Reviewer</td><td style="padding:7px 10px;">${reviewer}</td></tr>
+    </table>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:16px;font-size:13px;">
+      <tr><td style="padding:7px 10px;">Part I — KPI Performance</td><td style="padding:7px 10px;text-align:right;font-weight:600;">${kpiTotal} / ${kpiMax}</td></tr>
+      <tr style="background:#fff"><td style="padding:7px 10px;">Part II — 90-Day Performance</td><td style="padding:7px 10px;text-align:right;font-weight:600;">${p2Total} / 30</td></tr>
+      <tr><td style="padding:7px 10px;">Gate A — Current Tier Mastery</td><td style="padding:7px 10px;text-align:right;font-weight:600;">${gateA}</td></tr>
+      <tr style="background:#fff"><td style="padding:7px 10px;">Gate B — Next Tier Mastery</td><td style="padding:7px 10px;text-align:right;font-weight:600;">${gateB}</td></tr>
+    </table>
+    <div style="background:#2A2E31;color:#fff;padding:14px 18px;border-radius:5px;margin-bottom:${ov.active ? '10px' : '16px'};">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;opacity:0.6;margin-bottom:4px;">Recommendation</div>
+      <div style="font-size:20px;font-family:Georgia,serif;text-transform:capitalize;">${recommendation.replace(/_/g,' ')}</div>
+    </div>
+    ${ov.active ? `
+    <div style="background:#fff3cd;border:1.5px solid #e87770;border-radius:5px;padding:14px 18px;margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#c0392b;margin-bottom:6px;">⚠ Manager Override — Immediate Raise Authorized</div>
+      <div style="font-size:13px;margin-bottom:4px;"><strong>New Rate:</strong> $${ov.newRate}/hr</div>
+      <div style="font-size:13px;margin-bottom:4px;"><strong>Effective:</strong> ${ov.effectiveDate || 'TBD'}</div>
+      ${ov.comment ? `<div style="font-size:13px;"><strong>Justification:</strong> ${ov.comment}</div>` : ''}
+    </div>` : ''}
+    ${strengths !== '—' ? `<div style="margin-bottom:10px;"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#877765;margin-bottom:4px;">Strengths</div><div style="font-size:13px;">${strengths}</div></div>` : ''}
+    ${growth !== '—' ? `<div style="margin-bottom:10px;"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#877765;margin-bottom:4px;">Areas for Improvement</div><div style="font-size:13px;">${growth}</div></div>` : ''}
+    ${overall !== '—' ? `<div style="margin-bottom:10px;"><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#877765;margin-bottom:4px;">Overall Comments</div><div style="font-size:13px;">${overall}</div></div>` : ''}
+    <div style="font-size:12px;color:#877765;border-top:1px solid #D6CDBD;padding-top:12px;margin-top:8px;">
+      Employee: ${empSig} &nbsp;·&nbsp; OM: ${omSig} &nbsp;·&nbsp; Submitted: ${new Date().toLocaleDateString()}
+    </div>
+  </div>
+</div>`;
+
+  return { text, html };
+}
+
+function getOverrideData() {
+  const cb      = document.getElementById('overrideCheck');
+  const newRate = parseFloat(document.getElementById('overrideNewRate')?.value) || 0;
+  const effectiveDate = document.getElementById('overrideEffectiveDate')?.value || '';
+  const comment = document.getElementById('overrideComment')?.value || '';
+  return { active: cb?.checked || false, newRate, effectiveDate, comment };
+}
+
+function buildFormSnapshot(summary) {
+  const doc = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>DA 90-Day Review</title></head><body style="font-family:Arial,sans-serif;color:#2A2E31;max-width:760px;margin:0 auto;padding:20px"><pre style="white-space:pre-wrap;font-family:Arial,sans-serif;">${summary.text}</pre></body></html>`;
+  try { return btoa(unescape(encodeURIComponent(doc))); } catch(e) { return btoa(doc); }
+}
+
+async function generatePDF(summary) {
+  if (!window.jspdf) throw new Error('jsPDF not loaded');
+  if (typeof html2canvas === 'undefined') throw new Error('html2canvas not loaded');
+  const { jsPDF } = window.jspdf;
+  const mainEl = document.querySelector('.main');
+  const savedScrollY = window.scrollY;
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+  let canvas;
+  try {
+    canvas = await html2canvas(mainEl, {
+      scale: 2, useCORS: true, allowTaint: false, backgroundColor: '#F2EFE8',
+      scrollX: 0, scrollY: 0, logging: false,
+      onclone: (doc) => {
+        doc.querySelectorAll('.tier-body').forEach(b => b.classList.add('open'));
+        doc.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+        doc.body.classList.remove('edit-mode');
+        if (document.getElementById('overrideCheck')?.checked) {
+          const ob = doc.getElementById('overrideBody');
+          if (ob) { ob.style.display = 'block'; ob.classList.add('open'); }
+        }
+        doc.querySelectorAll('textarea').forEach(ta => {
+          const liveTA = ta.id ? document.getElementById(ta.id) : null;
+          const value = liveTA ? liveTA.value : ta.value;
+          const div = doc.createElement('div');
+          div.style.cssText = 'white-space:pre-wrap;word-break:break-word;overflow:visible;height:auto;min-height:0;font-family:Jost,sans-serif;font-size:14px;padding:9px 12px;border:1px solid #D6CDBD;border-radius:6px;';
+          div.textContent = value;
+          ta.parentNode.replaceChild(div, ta);
+        });
+        doc.querySelectorAll('input[type=text],input[type=number],input[type=date]').forEach(inp => {
+          const liveInp = inp.id ? document.getElementById(inp.id) : null;
+          const value = liveInp ? liveInp.value : inp.value;
+          if (!value) return;
+          const div = doc.createElement('div');
+          div.style.cssText = 'overflow:visible;height:auto;white-space:nowrap;font-family:Jost,sans-serif;font-size:14px;padding:9px 12px;border:1px solid #D6CDBD;border-radius:6px;';
+          div.textContent = value;
+          inp.parentNode.replaceChild(div, inp);
+        });
+      },
+    });
+  } finally {
+    window.scrollTo({ top: savedScrollY, behavior: 'instant' });
+  }
+  const imgData = canvas.toDataURL('image/jpeg', 0.93);
+  const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  const pdfW = pdf.internal.pageSize.getWidth();
+  const imgW = pdfW;
+  const imgH = (canvas.height * imgW) / canvas.width;
+  let yPos = 0;
+  pdf.addImage(imgData, 'JPEG', 0, 0, imgW, imgH);
+  while (yPos + pdf.internal.pageSize.getHeight() < imgH) {
+    yPos += pdf.internal.pageSize.getHeight();
+    pdf.addPage();
+    pdf.addImage(imgData, 'JPEG', 0, -yPos, imgW, imgH);
+  }
+  return pdf.output('datauristring').split(',')[1];
+}
+
+// ─── SETTINGS ────────────────────────────────────────────────────────────────
+
+const WORKER_URL  = 'https://sh-da-review-worker.smilehaus.workers.dev/submit';
+const WORKER_BASE = 'https://sh-da-review-worker.smilehaus.workers.dev';
+const DRAFT_ID_KEY = 'sh_da_90day_draft_id';
 
 function getAuthJwt() {
   const params = new URLSearchParams(window.location.search);
@@ -441,6 +1344,11 @@ function setDraftId(id) {
 }
 function clearDraftId() { localStorage.removeItem(DRAFT_ID_KEY); }
 
+function showDraftNote(msg) {
+  const el = document.getElementById('draftSavedNote');
+  if (el) { el.textContent = msg; el.style.display = msg ? 'inline' : 'none'; }
+}
+
 async function saveDraft() {
   const jwt = getAuthJwt();
   if (!jwt) { showToast('Sign in from the dashboard to save drafts.', 'error'); return; }
@@ -452,16 +1360,17 @@ async function saveDraft() {
   _draftBtns.forEach(b => { b.disabled = true; b.textContent = '💾 Saving…'; });
   showDraftNote('');
 
-  const state = collectFormState();
+  const state = { _scores: {...scores}, _skillState: {...skillState}, _dynamicSkills: {} };
+  document.querySelectorAll('.main [id], .submit-section [id]').forEach(el => {
+    if ((el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') && el.id && el.id !== 'pinInput') state[el.id] = el.value;
+  });
+  document.querySelectorAll('[data-editable][id]').forEach(el => { state[el.id] = el.textContent; });
+  const recEl = document.querySelector('input[name="recommendation"]:checked');
+  if (recEl) state._recommendation = recEl.value;
 
   try {
     const existingId = getDraftId();
-    const payload = {
-      form_type: 'da_90day',
-      employee_name: daName || 'Unnamed',
-      office: office || 'Unknown',
-      state,
-    };
+    const payload = { form_type: 'da_90day', employee_name: daName || 'Unnamed', office: office || 'Unknown', state };
     if (existingId) payload.id = existingId;
 
     let res = await fetch(WORKER_BASE + '/draft', {
@@ -469,18 +1378,10 @@ async function saveDraft() {
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jwt },
       body: JSON.stringify(payload),
     });
-
-    // If draft ID was stale (deleted/expired), retry as a fresh save
     if (res.status === 404 && payload.id) {
-      clearDraftId();
-      delete payload.id;
-      res = await fetch(WORKER_BASE + '/draft', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jwt },
-        body: JSON.stringify(payload),
-      });
+      clearDraftId(); delete payload.id;
+      res = await fetch(WORKER_BASE + '/draft', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + jwt }, body: JSON.stringify(payload) });
     }
-
     if (res.ok) {
       const data = await res.json();
       setDraftId(data.id);
@@ -504,618 +1405,95 @@ async function loadDraftFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const draftId = params.get('draft');
   if (!draftId) return;
-
   const jwt = getAuthJwt();
   if (!jwt) return;
-
   try {
-    const res = await fetch(WORKER_BASE + '/draft/' + encodeURIComponent(draftId), {
-      headers: { 'Authorization': 'Bearer ' + jwt },
-    });
+    const res = await fetch(WORKER_BASE + '/draft/' + encodeURIComponent(draftId), { headers: { 'Authorization': 'Bearer ' + jwt } });
     if (!res.ok) return;
     const data = await res.json();
     const draft = data.draft || data;
     if (draft.state) {
       setDraftId(draftId);
-      applyFormState(draft.state);
+      restoreStateObj(draft.state);
+      recalc();
       showDraftNote('Draft loaded · ' + (draft.employee_name || ''));
-      showToast('Draft resumed — ' + (draft.employee_name || 'draft') + ' · ' + (draft.office || ''), 'success');
+      showToast('Draft resumed — ' + (draft.employee_name || 'draft'), 'success');
     }
-  } catch(e) {
-    console.warn('Could not load draft:', e);
-  }
+  } catch(e) { console.warn('Could not load draft:', e); }
 }
 
-// ─── FORM STATE ───────────────────────────────────────────────────────────────
-
-function collectFormState() {
-  const state = { _perfScores: {...perfScores}, _skillStates: {...skillStates}, _goalChecks: {...goalChecks} };
-  ['daName','homeOffice','currentTier','startDate','reviewDate','reviewerName',
-   'strengths','improvement','goals90','overallAssessment','reviewerSig'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) state[id] = el.value;
-  });
-  const advCheck = document.getElementById('advanceCheck');
-  if (advCheck) state._advanceCheck = advCheck.checked;
-  return state;
+function getConfig() {
+  return { workerUrl: localStorage.getItem('sh_worker_url') || WORKER_URL };
 }
-
-let _saveTimer = null;
-function saveFormState() {
-  clearTimeout(_saveTimer);
-  _saveTimer = setTimeout(() => {
-    localStorage.setItem(SAVE_KEY, JSON.stringify(collectFormState()));
-  }, 300);
+function openSettings() {
+  document.getElementById('cfg_worker_url').value = getConfig().workerUrl;
+  document.getElementById('settingsModal').classList.add('show');
 }
-
-function applyFormState(state) {
-  ['daName','homeOffice','currentTier','startDate','reviewDate','reviewerName',
-   'strengths','improvement','goals90','overallAssessment','reviewerSig'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el && state[id] !== undefined) el.value = state[id];
-  });
-  if (state._advanceCheck !== undefined) {
-    const cb = document.getElementById('advanceCheck');
-    if (cb) cb.checked = state._advanceCheck;
-  }
-  if (state._perfScores) {
-    Object.assign(perfScores, state._perfScores);
-    Object.keys(state._perfScores).forEach(id => {
-      updateScoreDisplay(id, state._perfScores[id]);
-    });
-  }
-  if (state._skillStates) {
-    Object.assign(skillStates, state._skillStates);
-    Object.keys(state._skillStates).forEach(k => {
-      const btn = document.getElementById(`skillBtn_${k}_${state._skillStates[k]}`);
-      if (btn) {
-        const row = btn.closest('.skill-eval-row');
-        if (row) {
-          row.querySelectorAll('.skill-radio-btn').forEach(b => b.className = 'skill-radio-btn');
-          btn.classList.add(state._skillStates[k]);
-        }
-      }
-    });
-  }
-  if (state._goalChecks) {
-    Object.assign(goalChecks, state._goalChecks);
-    Object.keys(state._goalChecks).forEach(k => {
-      const cb = document.getElementById(`goalCb_${k}`);
-      if (cb) cb.checked = state._goalChecks[k];
-    });
-  }
-  // Trigger tier render with restored tier value
-  if (document.getElementById('currentTier')?.value) onTierChange(true);
-  // Trigger assessment update
-  onAssessmentChange(true);
-  recalc();
+function saveSettings() {
+  localStorage.setItem('sh_worker_url', document.getElementById('cfg_worker_url').value.trim() || WORKER_URL);
+  closeSettings(); showToast('Settings saved.', 'success');
 }
+function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
 
-function restoreFormState() {
-  const raw = localStorage.getItem(SAVE_KEY);
-  if (!raw) return;
-  let state;
-  try { state = JSON.parse(raw); } catch(e) { return; }
-  applyFormState(state);
-}
-
-// ─── RENDER: Tier sections ────────────────────────────────────────────────────
-
-function onTierChange(silent = false) {
-  const tierKey = document.getElementById('currentTier').value;
-  renderSection1(tierKey);
-  renderSection2(tierKey);
-  if (!silent) saveFormState();
-}
-
-function renderSection1(tierKey) {
-  const titleEl = document.getElementById('section1Title');
-  const subEl   = document.getElementById('section1Sub');
-  const bodyEl  = document.getElementById('section1Skills');
-
-  if (!tierKey || !TIERS[tierKey]) {
-    titleEl.textContent = 'Current Tier Requirements';
-    subEl.textContent = 'Select a tier above to see competency requirements.';
-    bodyEl.innerHTML = '<div style="text-align:center;padding:24px 0;color:var(--taupe);font-size:13px;">Select the current tier in the header section to load skills.</div>';
-    return;
-  }
-
-  const tier = TIERS[tierKey];
-  titleEl.textContent = `Current Tier Requirements — ${tier.label}`;
-  subEl.textContent = 'Check each competency the DA has demonstrated to your satisfaction.';
-
-  bodyEl.innerHTML = tier.skills.map((skill, idx) => {
-    const key = `${tierKey}_${idx}`;
-    const cur = skillStates[key] || null;
-    return `
-    <div class="skill-eval-row">
-      <span class="skill-eval-text">${skill}</span>
-      <div class="skill-radio-group">
-        <button class="skill-radio-btn${cur === 'achieved' ? ' achieved' : ''}" id="skillBtn_${key}_achieved" onclick="setSkillState('${key}','achieved')">&#10003; Achieved</button>
-        <button class="skill-radio-btn${cur === 'progressing' ? ' progressing' : ''}" id="skillBtn_${key}_progressing" onclick="setSkillState('${key}','progressing')">&#9889; Progressing</button>
-        <button class="skill-radio-btn${cur === 'not-yet' ? ' not-yet' : ''}" id="skillBtn_${key}_not-yet" onclick="setSkillState('${key}','not-yet')">&#10007; Not Yet</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function renderSection2(tierKey) {
-  const titleEl = document.getElementById('section2Title');
-  const subEl   = document.getElementById('section2Sub');
-  const bodyEl  = document.getElementById('section2Skills');
-
-  if (!tierKey || !TIERS[tierKey]) {
-    titleEl.textContent = 'Advancement Goals';
-    subEl.textContent = 'Select the current tier above to see advancement goals.';
-    bodyEl.innerHTML = '<div style="text-align:center;padding:24px 0;color:var(--taupe);font-size:13px;">Select the current tier above to see advancement goals.</div>';
-    return;
-  }
-
-  const tier = TIERS[tierKey];
-
-  if (!tier.next) {
-    titleEl.textContent = 'Advancement Goals';
-    subEl.textContent = '';
-    bodyEl.innerHTML = '<div style="padding:20px 16px;font-size:13px;color:var(--taupe);font-style:italic;">DA is at the highest tier — no advancement checklist.</div>';
-    return;
-  }
-
-  const nextTier = TIERS[tier.next];
-  titleEl.textContent = `Advancement Goals — Target: ${nextTier.label} (${nextTier.rate})`;
-  subEl.textContent = `Skills the DA needs to develop to advance to ${tier.next}.`;
-
-  bodyEl.innerHTML = nextTier.skills.map((skill, idx) => {
-    const key = `${tier.next}_${idx}`;
-    const checked = goalChecks[key] || false;
-    return `
-    <div class="goal-check-row">
-      <input type="checkbox" id="goalCb_${key}" ${checked ? 'checked' : ''} onchange="setGoalCheck('${key}', this.checked)">
-      <label class="goal-check-text" for="goalCb_${key}">${skill} — <em style="color:var(--taupe)">Discussed with DA</em></label>
-    </div>`;
-  }).join('');
-}
-
-function setSkillState(key, state) {
-  skillStates[key] = skillStates[key] === state ? null : state;
-  const val = skillStates[key];
-  ['achieved','progressing','not-yet'].forEach(s => {
-    const btn = document.getElementById(`skillBtn_${key}_${s}`);
-    if (btn) { btn.className = 'skill-radio-btn' + (val === s ? ' ' + s : ''); }
-  });
-  saveFormState();
-}
-
-function setGoalCheck(key, checked) {
-  goalChecks[key] = checked;
-  saveFormState();
-}
-
-// ─── RENDER: Performance ─────────────────────────────────────────────────────
-
-function renderPerf() {
-  document.getElementById('perfBody').innerHTML = PERF_CATS.map(cat => {
-    const score = perfScores[cat.id] || 0;
-    return `
-    <div class="perf-row" id="perfRow_${cat.id}">
-      <span class="perf-cat">${cat.label}</span>
-      <div class="perf-score-ctl">
-        <button class="score-dec" id="dec_${cat.id}" onclick="changeScore('${cat.id}',-1)" title="Decrease">−</button>
-        <span class="score-val${score > 0 ? ' nonzero' : ''}" id="scoreVal_${cat.id}">${score}</span>
-        <span class="score-max">/ 5</span>
-        <button class="score-inc" id="inc_${cat.id}" onclick="changeScore('${cat.id}',+1)" title="Increase">+</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function changeScore(id, delta) {
-  const cur = perfScores[id] || 0;
-  const next = Math.max(0, Math.min(5, cur + delta));
-  perfScores[id] = next;
-  updateScoreDisplay(id, next);
-  recalc();
-  saveFormState();
-}
-
-function updateScoreDisplay(id, val) {
-  const valEl = document.getElementById(`scoreVal_${id}`);
-  const decEl = document.getElementById(`dec_${id}`);
-  const incEl = document.getElementById(`inc_${id}`);
-  if (valEl) { valEl.textContent = val; valEl.className = 'score-val' + (val > 0 ? ' nonzero' : ''); }
-  if (decEl) decEl.className = 'score-dec' + (val > 0 ? ' active' : '');
-  if (incEl) incEl.className = 'score-inc' + (val < 5 ? '' : '');
-}
-
-// ─── CALCULATION ─────────────────────────────────────────────────────────────
-
-function recalc() {
-  const total = PERF_CATS.reduce((sum, cat) => sum + (perfScores[cat.id] || 0), 0);
-  document.getElementById('totalScore').textContent = total;
-  document.getElementById('scoreTotalDisplay').textContent = total;
-
-  const { band, cls, desc } = getBand(total);
-  document.getElementById('bandName').textContent = band;
-  document.getElementById('bandName').style.opacity = '';
-  document.getElementById('bandDesc').textContent = desc;
-
-  const chip = document.getElementById('bandChip');
-  chip.textContent = band;
-  chip.style.display = total > 0 ? 'inline-block' : 'none';
-  chip.className = 'band-chip ' + cls;
-}
-
-function getBand(score) {
-  if (score <= 14) return { band: 'Needs Improvement Plan',   cls: 'band-needs',      desc: 'Significant concerns — formal improvement plan required' };
-  if (score <= 20) return { band: 'Below Expectations',       cls: 'band-below',      desc: 'Falling short in multiple areas; coaching needed' };
-  if (score <= 25) return { band: 'Meets Expectations',       cls: 'band-meets',      desc: 'Solid performance for this stage of tenure' };
-  if (score <= 28) return { band: 'Exceeds Expectations',     cls: 'band-exceeds',    desc: 'Strong performance; progressing ahead of schedule' };
-  return             { band: 'Outstanding',                  cls: 'band-outstanding', desc: 'Exceptional — exceeded all expectations in first 90 days' };
-}
-
-function getBandLabel() {
-  const total = PERF_CATS.reduce((sum, cat) => sum + (perfScores[cat.id] || 0), 0);
-  return getBand(total).band;
-}
-
-// ─── ASSESSMENT ───────────────────────────────────────────────────────────────
-
-function onAssessmentChange(silent = false) {
-  const val = document.getElementById('overallAssessment').value;
-  const tierKey = document.getElementById('currentTier').value;
-  const row = document.getElementById('advanceCheckRow');
-  const lbl = document.getElementById('advanceCheckLabel');
-  const cb  = document.getElementById('advanceCheck');
-
-  if (val === 'ready_advance' && tierKey && TIERS[tierKey] && TIERS[tierKey].next) {
-    const nextLabel = TIERS[TIERS[tierKey].next].label;
-    lbl.textContent = `I recommend advancing this DA to ${TIERS[tierKey].next} — ${nextLabel}`;
-    row.style.display = 'flex';
-  } else {
-    row.style.display = 'none';
-    if (cb) cb.checked = false;
-  }
-  if (!silent) saveFormState();
-}
-
-// ─── SUBMIT ──────────────────────────────────────────────────────────────────
-
-function buildSummaryText() {
-  const f = id => document.getElementById(id)?.value || '—';
-  const daName = f('daName'), office = f('homeOffice'), tier = f('currentTier');
-  const startDate = f('startDate'), reviewDate = f('reviewDate'), reviewer = f('reviewerName');
-  const total = PERF_CATS.reduce((sum, cat) => sum + (perfScores[cat.id] || 0), 0);
-  const band = getBandLabel();
-  const assessment = f('overallAssessment').replace('_', ' ');
-  const strengths = f('strengths'), improvement = f('improvement'), goals = f('goals90');
-  const sig = f('reviewerSig');
-  const advCheck = document.getElementById('advanceCheck')?.checked;
-
-  const catScores = PERF_CATS.map(cat => `  ${cat.label}: ${perfScores[cat.id] || 0}/5`).join('\n');
-
-  const tierKey = tier, tierData = TIERS[tierKey] || {};
-  const skillSummary = (tierData.skills || []).map((skill, idx) => {
-    const state = skillStates[`${tierKey}_${idx}`];
-    const label = state === 'achieved' ? '✓ Achieved' : state === 'progressing' ? '⚡ Progressing' : state === 'not-yet' ? '✗ Not Yet' : '— Not evaluated';
-    return `  ${skill}: ${label}`;
-  }).join('\n');
-
-  const nextTierKey = tierData.next;
-  const nextTier = nextTierKey ? TIERS[nextTierKey] : null;
-  const goalSummary = nextTier ? (nextTier.skills || []).map((skill, idx) => {
-    const checked = goalChecks[`${nextTierKey}_${idx}`] ? '[x]' : '[ ]';
-    return `  ${checked} ${skill}`;
-  }).join('\n') : 'N/A — at highest tier';
-
-  return [
-    'DA 90-DAY REVIEW — SMILE HAUS',
-    '═══════════════════════════════════',
-    `DA: ${daName}  |  Office: ${office}  |  Tier: ${tier}`,
-    `Start Date: ${startDate}  |  Review Date: ${reviewDate}  |  Reviewer: ${reviewer}`,
-    '',
-    'PERFORMANCE SCORES (out of 30)',
-    catScores,
-    `TOTAL: ${total}/30 — ${band}`,
-    '',
-    'OVERALL ASSESSMENT',
-    `  ${assessment}${advCheck ? '  ·  Advancement recommended' : ''}`,
-    '',
-    'CURRENT TIER COMPETENCIES',
-    skillSummary || '  (none evaluated)',
-    '',
-    'ADVANCEMENT GOALS',
-    goalSummary,
-    '',
-    'FEEDBACK',
-    `  Strengths: ${strengths}`,
-    `  Improvement: ${improvement}`,
-    `  90-Day Goals: ${goals}`,
-    '',
-    `Reviewer Signature: ${sig}  |  Submitted: ${new Date().toLocaleDateString()}`,
-  ].join('\n');
-}
-
-// ─── PDF / SNAPSHOT ──────────────────────────────────────────────────────────
-
-function buildFormSnapshotDoc() {
-  const f = id => document.getElementById(id)?.value || '—';
-  const daName = f('daName'), office = f('homeOffice'), tier = f('currentTier');
-  const startDate = f('startDate'), reviewDate = f('reviewDate'), reviewer = f('reviewerName');
-  const sig = f('reviewerSig');
-  const total = PERF_CATS.reduce((sum, cat) => sum + (perfScores[cat.id] || 0), 0);
-  const band = getBandLabel();
-
-  const catRows = PERF_CATS.map(cat => `
-    <tr>
-      <td style="padding:5px 10px;">${cat.label}</td>
-      <td style="padding:5px 10px;text-align:center;">${perfScores[cat.id] || 0}/5</td>
-    </tr>`).join('');
-
-  const tierData = TIERS[tier] || {};
-  const skillRows = (tierData.skills || []).map((skill, idx) => {
-    const st = skillStates[`${tier}_${idx}`];
-    const lbl = st === 'achieved' ? '✓ Achieved' : st === 'progressing' ? '⚡ Progressing' : st === 'not-yet' ? '✗ Not Yet' : '—';
-    const color = st === 'achieved' ? '#2d6a3f' : st === 'not-yet' ? '#c0392b' : '#888';
-    return `<tr><td style="padding:4px 10px 4px 20px;font-size:12px;">${skill}</td><td style="padding:4px 10px;text-align:center;font-size:12px;color:${color};font-weight:600;">${lbl}</td></tr>`;
-  }).join('');
-
-  const nextTierKey = tierData.next;
-  const nextTier = nextTierKey ? TIERS[nextTierKey] : null;
-  const goalRows = nextTier ? (nextTier.skills || []).map((skill, idx) => {
-    const checked = goalChecks[`${nextTierKey}_${idx}`];
-    return `<tr><td style="padding:4px 10px 4px 20px;font-size:12px;">${checked ? '☑' : '☐'} ${skill}</td></tr>`;
-  }).join('') : '<tr><td style="padding:8px 10px;font-size:12px;color:#888;font-style:italic;">DA is at highest tier — no advancement goals.</td></tr>';
-
-  const advCheck = document.getElementById('advanceCheck')?.checked;
-  const assessment = f('overallAssessment').replace(/_/g, ' ');
-
-  return `<!DOCTYPE html>
-<html><head><meta charset="UTF-8">
-<title>DA 90-Day Review — ${daName} — ${reviewDate}</title>
-<style>body{font-family:Arial,sans-serif;color:#2A2E31;max-width:760px;margin:0 auto;padding:20px}table{width:100%;border-collapse:collapse}td{vertical-align:top}h2{font-family:Georgia,serif;font-weight:300;margin:24px 0 8px}.section-hdr{background:#877765;color:#fff;padding:10px 14px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-top:24px}</style>
-</head><body>
-<div style="background:#1a1a2e;color:#F2EFE8;padding:16px 20px;margin-bottom:24px">
-  <div style="font-family:Georgia,serif;font-size:18px;font-weight:300;">Smile Haus — DA 90-Day Review</div>
-  <div style="font-size:12px;opacity:0.6;margin-top:4px;">Submitted ${new Date().toLocaleString()}</div>
-</div>
-
-<div class="section-hdr">Review Information</div>
-<table>
-<tr><td style="padding:6px 10px;width:160px;font-weight:600;color:#877765;">DA Name</td><td style="padding:6px 10px;">${daName}</td><td style="padding:6px 10px;width:160px;font-weight:600;color:#877765;">Home Office</td><td style="padding:6px 10px;">${office}</td></tr>
-<tr style="background:#f5f3ef"><td style="padding:6px 10px;font-weight:600;color:#877765;">Current Tier</td><td style="padding:6px 10px;">${tier}</td><td style="padding:6px 10px;font-weight:600;color:#877765;">Start Date</td><td style="padding:6px 10px;">${startDate}</td></tr>
-<tr><td style="padding:6px 10px;font-weight:600;color:#877765;">Review Date</td><td style="padding:6px 10px;">${reviewDate}</td><td style="padding:6px 10px;font-weight:600;color:#877765;">Reviewer</td><td style="padding:6px 10px;">${reviewer}</td></tr>
-</table>
-
-<div class="section-hdr">Performance Scores — ${total}/30 (${band})</div>
-<table>
-<tr style="background:#2A2E31;color:#fff"><td style="padding:6px 10px;font-size:12px;font-weight:700;">Category</td><td style="padding:6px 10px;font-size:12px;font-weight:700;text-align:center;width:80px;">Score</td></tr>
-${catRows}
-</table>
-
-<div class="section-hdr">Current Tier Competencies — ${tier}</div>
-<table>
-<tr style="background:#2A2E31;color:#fff"><td style="padding:6px 10px;font-size:12px;font-weight:700;">Skill</td><td style="padding:6px 10px;font-size:12px;font-weight:700;text-align:center;width:120px;">Status</td></tr>
-${skillRows || '<tr><td colspan="2" style="padding:8px 10px;color:#888;font-style:italic;">No tier selected.</td></tr>'}
-</table>
-
-<div class="section-hdr">Advancement Goals${nextTierKey ? ` — Target: ${nextTierKey}` : ''}</div>
-<table>${goalRows}</table>
-
-<div class="section-hdr">Assessment &amp; Feedback</div>
-<table>
-<tr><td style="padding:6px 10px;font-weight:600;color:#877765;width:160px;">Overall Assessment</td><td style="padding:6px 10px;">${assessment}${advCheck ? ' · <strong>Advancement recommended</strong>' : ''}</td></tr>
-<tr style="background:#f5f3ef"><td style="padding:6px 10px;font-weight:600;color:#877765;">Strengths</td><td style="padding:6px 10px;">${f('strengths')}</td></tr>
-<tr><td style="padding:6px 10px;font-weight:600;color:#877765;">Areas for Improvement</td><td style="padding:6px 10px;">${f('improvement')}</td></tr>
-<tr style="background:#f5f3ef"><td style="padding:6px 10px;font-weight:600;color:#877765;">90-Day Goals</td><td style="padding:6px 10px;">${f('goals90')}</td></tr>
-</table>
-
-<div style="margin-top:24px;padding:12px 14px;border-top:2px solid #1a1a2e;font-size:12px;color:#877765;">
-  Reviewer Signature: <b>${sig}</b>
-</div>
-</body></html>`;
-}
-
-function buildFormSnapshot() {
-  const doc = buildFormSnapshotDoc();
-  try { return btoa(unescape(encodeURIComponent(doc))); }
-  catch(e) { return btoa(doc); }
-}
-
-async function generatePDF() {
-  if (!window.jspdf) throw new Error('jsPDF not loaded');
-  if (typeof html2canvas === 'undefined') throw new Error('html2canvas not loaded');
-
-  const { jsPDF } = window.jspdf;
-  const mainEl = document.querySelector('.main');
-
-  const savedScrollY = window.scrollY;
-  window.scrollTo({ top: 0, behavior: 'instant' });
-  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-
-  let canvas;
+async function testWorker() {
+  const baseUrl = document.getElementById('cfg_worker_url').value.trim() || WORKER_URL;
+  const healthUrl = baseUrl.replace(/\/submit$/, '/health');
+  const resultEl = document.getElementById('cuTestResult');
+  const btn = document.getElementById('cuTestBtn');
+  btn.disabled = true; btn.textContent = 'Testing…'; resultEl.textContent = '';
   try {
-    canvas = await html2canvas(mainEl, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: false,
-      backgroundColor: '#F2EFE8',
-      scrollX: 0,
-      scrollY: 0,
-      windowWidth: document.documentElement.clientWidth,
-      windowHeight: document.documentElement.clientHeight,
-      logging: false,
-      onclone: (doc) => {
-        // Un-sticky score bar
-        const bar = doc.querySelector('.score-summary');
-        if (bar) bar.style.position = 'relative';
-        // Hide modals
-        doc.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
-        // Replace textarea with divs (html2canvas clips textarea content)
-        doc.querySelectorAll('textarea').forEach(ta => {
-          const liveTA = ta.id ? document.getElementById(ta.id) : null;
-          const value = liveTA ? liveTA.value : ta.value;
-          const cs = window.getComputedStyle(liveTA || ta);
-          const div = doc.createElement('div');
-          ['font-family','font-size','font-weight','line-height','color',
-           'padding','border','border-radius','background-color',
-           'width','box-sizing','word-break','word-wrap']
-            .forEach(p => { div.style[p] = cs.getPropertyValue(p); });
-          div.style.whiteSpace = 'pre-wrap';
-          div.style.wordBreak = 'break-word';
-          div.style.overflow = 'visible';
-          div.style.height = 'auto';
-          div.style.minHeight = '0';
-          div.textContent = value;
-          ta.parentNode.replaceChild(div, ta);
-        });
-        // Replace text/date inputs with divs
-        doc.querySelectorAll('input[type=text], input[type=date]').forEach(inp => {
-          const liveInp = inp.id ? document.getElementById(inp.id) : null;
-          const value = liveInp ? liveInp.value : inp.value;
-          if (!value) return;
-          const cs = window.getComputedStyle(liveInp || inp);
-          const div = doc.createElement('div');
-          ['font-family','font-size','font-weight','line-height','color',
-           'padding','border','border-radius','background-color','width','box-sizing']
-            .forEach(p => { div.style[p] = cs.getPropertyValue(p); });
-          div.style.overflow = 'visible';
-          div.style.height = 'auto';
-          div.style.whiteSpace = 'nowrap';
-          div.textContent = value;
-          inp.parentNode.replaceChild(div, inp);
-        });
-      },
-    });
-  } finally {
-    window.scrollTo({ top: savedScrollY, behavior: 'instant' });
-  }
-
-  const imgData = canvas.toDataURL('image/jpeg', 0.93);
-  const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-  const pdfW = pdf.internal.pageSize.getWidth();
-  const pdfH = pdf.internal.pageSize.getHeight();
-  const imgW = pdfW;
-  const imgH = (canvas.height * imgW) / canvas.width;
-
-  let yPos = 0;
-  pdf.addImage(imgData, 'JPEG', 0, 0, imgW, imgH);
-  while (yPos + pdfH < imgH) {
-    yPos += pdfH;
-    pdf.addPage();
-    pdf.addImage(imgData, 'JPEG', 0, -yPos, imgW, imgH);
-  }
-
-  return pdf.output('datauristring').split(',')[1];
+    const res = await fetch(healthUrl);
+    if (res.ok) { resultEl.style.color = '#2d6a3f'; resultEl.textContent = '✓ Worker is online.'; }
+    else { resultEl.style.color = '#c0392b'; resultEl.textContent = `✗ Worker returned status ${res.status}.`; }
+  } catch(e) { resultEl.style.color = '#c0392b'; resultEl.textContent = '✗ Network error — worker unreachable.'; }
+  btn.disabled = false; btn.textContent = '🕗 Test Connection';
 }
 
-// ─── SUBMIT ──────────────────────────────────────────────────────────────────
+// ─── LOCK / EDIT ─────────────────────────────────────────────────────────────
 
-async function handleSubmit() {
-  const daName = document.getElementById('daName').value.trim();
-  const office = document.getElementById('homeOffice').value;
-  const tier   = document.getElementById('currentTier').value;
-  const reviewer = document.getElementById('reviewerName').value.trim();
-  const reviewDate = document.getElementById('reviewDate').value || new Date().toISOString().slice(0,10);
-  const sig = document.getElementById('reviewerSig').value.trim();
+const FORM_PIN = 'smilehaus2024';
 
-  if (!daName || !office || !tier || !sig) {
-    showToast('Fill in DA Name, Office, Tier, and Reviewer Signature before submitting.', 'error'); return;
-  }
-
-  if (!window.jspdf) { showToast('jsPDF library not loaded — check internet connection.', 'error'); return; }
-  if (typeof html2canvas === 'undefined') { showToast('html2canvas not loaded — check internet connection.', 'error'); return; }
-
-  const cfg = getConfig();
-  if (!cfg.workerUrl) { showToast('Worker URL not configured. Contact IT.', 'error'); return; }
-
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-
-  const total = PERF_CATS.reduce((sum, cat) => sum + (perfScores[cat.id] || 0), 0);
-  const bandLabel = getBandLabel();
-  const summary = buildSummaryText();
-  let emailOk = false, clickupOk = false;
-
-  try {
-    // Generate PDF, fall back to HTML snapshot
-    btn.textContent = 'Generating PDF…';
-    let formPdfB64 = null, formHtmlB64 = null, ext = 'html';
-    try {
-      formPdfB64 = await generatePDF();
-      ext = 'pdf';
-    } catch(e) {
-      console.warn('PDF generation failed, using HTML snapshot:', e);
-      formHtmlB64 = buildFormSnapshot();
-    }
-
-    btn.textContent = 'Submitting…';
-
-    const taskName = `DA 90-Day Review — ${daName} — ${office} — ${reviewDate}`;
-    const taskBody = JSON.stringify({
-      name: taskName,
-      description: summary,
-      priority: 2,
-      custom_fields: [],
-    });
-
-    const jwt = getAuthJwt();
-    const headers = { 'Content-Type': 'application/json' };
-    if (jwt) headers['Authorization'] = 'Bearer ' + jwt;
-
-    const res = await fetch(cfg.workerUrl, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        task_name: taskName,
-        task_body: taskBody,
-        da_name: daName,
-        office,
-        tier,
-        review_date: reviewDate,
-        score: `${total}/30`,
-        band: bandLabel,
-        raise: 'N/A',
-        new_rate: 'N/A',
-        reviewer: reviewer || sig,
-        summary,
-        form_pdf_b64:  formPdfB64,
-        form_html_b64: formHtmlB64,
-        form_filename: `DA_90Day_Review_${daName.replace(/\s+/g,'_')}_${reviewDate}.${ext}`,
-        form_type: 'da_90day',
-        form_state: collectFormState(),
-        draft_id: getDraftId() || undefined,
-      }),
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      clickupOk = !!data.clickup_ok;
-      emailOk   = !!data.email_ok;
-      if (data.errors?.length) console.warn('Worker errors:', data.errors);
-      clearDraftId();
-      showDraftNote('');
-    } else {
-      const errText = await res.text().catch(() => res.status);
-      console.error('Worker responded', res.status, errText);
-      showToast('Submission failed (status ' + res.status + '). See console.', 'error');
-    }
-  } catch(e) {
-    console.error('Submit error:', e);
-    showToast('Network error: ' + e.message, 'error');
-  }
-
-  btn.disabled = false; btn.textContent = 'Submit for Approval';
-
-  if (clickupOk || emailOk) {
-    const parts = [];
-    if (clickupOk) parts.push('ClickUp task created ✓');
-    else parts.push('ClickUp: failed — check console');
-    if (emailOk) parts.push('Email sent ✓');
-    else parts.push('Email pending');
-    showToast(parts.join('  ·  '), clickupOk ? 'success' : 'error');
-  }
+function toggleLock() {
+  if (formLocked) { unlockForm(); showToast('Form unlocked — all fields and score buttons are active.', 'success'); }
+  else { showToast('Form is in edit mode — all fields and score buttons are active.', 'success'); }
 }
+function getFormFields() {
+  return document.querySelectorAll('.main input, .main select, .main textarea, .submit-section input, button.score-btn, button.skill-btn, button.pass-all-btn, button.fail-all-btn, button.tier-expand-btn, #submitBtn');
+}
+function getEditables() { return document.querySelectorAll('[data-editable]'); }
+function lockForm() {
+  formLocked = true;
+  getFormFields().forEach(el => el.disabled = true);
+  getEditables().forEach(el => { el.contentEditable = 'false'; });
+  document.body.classList.add('form-locked');
+  const btn = document.getElementById('editLockBtn');
+  if (btn) { btn.innerHTML = '✎ Edit'; btn.classList.add('locked'); }
+}
+function unlockForm() {
+  formLocked = false;
+  getFormFields().forEach(el => el.disabled = false);
+  getEditables().forEach(el => { el.contentEditable = 'true'; });
+  document.body.classList.remove('form-locked');
+  const btn = document.getElementById('editLockBtn');
+  if (btn) { btn.innerHTML = '&#9998; Edit'; btn.classList.remove('locked'); }
+}
+let pinCallback = null;
+function openPinModal(onSuccess) {
+  pinCallback = onSuccess || null;
+  document.getElementById('pinInput').value = '';
+  document.getElementById('pinError').style.display = 'none';
+  document.getElementById('pinModal').classList.add('show');
+  setTimeout(() => document.getElementById('pinInput').focus(), 80);
+}
+function closePinModal() { document.getElementById('pinModal').classList.remove('show'); pinCallback = null; }
+function submitPin() {
+  const val = document.getElementById('pinInput').value;
+  if (val === FORM_PIN) { closePinModal(); if (pinCallback) pinCallback(); else unlockForm(); }
+  else { document.getElementById('pinError').style.display = 'block'; document.getElementById('pinInput').value = ''; document.getElementById('pinInput').focus(); }
+}
+function openSettingsGated() { openPinModal(() => openSettings()); }
 
-// ─── RESET ────────────────────────────────────────────────────────────────────
+// ─── RESET ───────────────────────────────────────────────────────────────────
 
 function confirmReset() { document.getElementById('resetModal').classList.add('show'); }
 function closeResetModal() { document.getElementById('resetModal').classList.remove('show'); }
@@ -1123,73 +1501,268 @@ function closeResetModal() { document.getElementById('resetModal').classList.rem
 function resetForm() {
   closeResetModal();
   localStorage.removeItem(SAVE_KEY);
-
-  // Clear state objects
-  Object.keys(perfScores).forEach(k => delete perfScores[k]);
-  Object.keys(skillStates).forEach(k => delete skillStates[k]);
-  Object.keys(goalChecks).forEach(k => delete goalChecks[k]);
-
-  // Reset all form fields
-  ['daName','homeOffice','currentTier','startDate','reviewDate','reviewerName',
-   'strengths','improvement','goals90','overallAssessment','reviewerSig'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
+  Object.keys(scores).forEach(k => delete scores[k]);
+  Object.keys(skillState).forEach(k => delete skillState[k]);
+  document.querySelectorAll('.main input, .main select, .main textarea, .submit-section input, .submit-section textarea').forEach(el => {
+    if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+    else el.value = '';
   });
-  document.getElementById('advanceCheck').checked = false;
-  document.getElementById('advanceCheckRow').style.display = 'none';
-
-  // Set today's date
-  const today = new Date().toISOString().slice(0,10);
-  document.getElementById('reviewDate').value = today;
-
-  // Re-render dynamic sections
-  renderPerf();
-  renderSection1('');
-  renderSection2('');
-
-  // Clear draft tracking
-  clearDraftId();
-  showDraftNote('');
+  document.querySelectorAll('.rec-option').forEach(o => o.classList.remove('selected'));
+  document.getElementById('overrideBody')?.classList.remove('open');
+  document.getElementById('overrideBadge').textContent = 'Off';
+  document.getElementById('overrideBox').style.borderColor = '';
+  document.getElementById('overrideRaiseSummary').textContent = '';
+  const today = new Date().toISOString().slice(0, 10);
+  ['reviewDate','submitDate','employeeSigDate'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = today;
+  });
+  renderKPIs(); renderPerf(); renderTierAccordion();
+  restoreCustomSkills();
+  document.body.classList.remove('form-locked');
+  clearDraftId(); showDraftNote('');
   try {
     const p = new URLSearchParams(window.location.search);
     p.delete('draft');
     history.replaceState(null, '', window.location.pathname + (p.toString() ? '?' + p.toString() : '') + window.location.hash);
   } catch(e) {}
-
   recalc();
   showToast('Form has been reset.', 'success');
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
+// ─── TOAST ───────────────────────────────────────────────────────────────────
 
-renderPerf();
-renderSection1('');
-renderSection2('');
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show ' + type;
+  setTimeout(() => { t.className = 'toast'; }, 5000);
+}
 
-// Set today's date
-document.getElementById('reviewDate').value = new Date().toISOString().slice(0,10);
+// ─── PERSISTENCE ─────────────────────────────────────────────────────────────
 
-// Auth: process ?auth= param, show dashboard nav if logged in
-getAuthJwt();
-if (localStorage.getItem('sh_review_auth')) {
-  ['backToHomeBtn','backToRecordsBtn','headerSaveDraftBtn'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.style.display = 'inline-flex';
+const SAVE_KEY     = 'sh_da_90day_review_data';
+const TEMPLATE_KEY = 'sh_da_90day_review_template';
+const SKILLS_KEY   = 'sh_da_90day_review_skills';
+
+let _saveTimer = null;
+function saveFormState() {
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(() => {
+    const state = { _scores: {...scores}, _skillState: {...skillState}, _dynamicSkills: {} };
+    document.querySelectorAll('.main [id], .submit-section [id]').forEach(el => {
+      if ((el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') && el.id && el.id !== 'pinInput') state[el.id] = el.value;
+    });
+    document.querySelectorAll('[data-editable][id]').forEach(el => { state[el.id] = el.textContent; });
+    const recEl = document.querySelector('input[name="recommendation"]:checked');
+    if (recEl) state._recommendation = recEl.value;
+    ['T1','T2','T3','T4','T5','T6','T7'].forEach(k => {
+      const body = document.getElementById(`tierBody_${k}`);
+      if (!body) return;
+      const base = TIER_SKILLS[k].length;
+      const rows = body.querySelectorAll('.skill-row');
+      if (rows.length > base) {
+        state._dynamicSkills[k] = [];
+        for (let i = base; i < rows.length; i++) state._dynamicSkills[k].push(rows[i].querySelector('.skill-name')?.textContent || '');
+      }
+    });
+    localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+  }, 300);
+}
+
+function restoreStateObj(state) {
+  Object.keys(state).filter(k => !k.startsWith('_')).forEach(id => {
+    const el = document.getElementById(id);
+    if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA')) el.value = state[id];
   });
+  document.querySelectorAll('[data-editable][id]').forEach(el => {
+    if (state[el.id] !== undefined) el.textContent = state[el.id];
+  });
+  if (state._scores) {
+    Object.assign(scores, state._scores);
+    Object.keys(state._scores).forEach(id => {
+      const val = state._scores[id];
+      document.querySelectorAll(`[data-id="${id}"][data-val]`).forEach(btn => btn.classList.toggle('active', String(btn.dataset.val) === String(val)));
+    });
+  }
+  if (state._skillState) {
+    Object.assign(skillState, state._skillState);
+    Object.keys(state._skillState).forEach(k => {
+      const parts = k.split('_'); const tierKey = parts[0], idx = parts[1];
+      const sv = state._skillState[k];
+      const canBtn    = document.getElementById(`skill_${tierKey}_${idx}_can`);
+      const cannotBtn = document.getElementById(`skill_${tierKey}_${idx}_cannot`);
+      if (canBtn)    canBtn.className = 'skill-btn' + (sv === 'can' ? ' can-do' : '');
+      if (cannotBtn) cannotBtn.className = 'skill-btn' + (sv === 'cannot' ? ' cannot-do' : '');
+    });
+  }
+  if (state._dynamicSkills) {
+    Object.keys(state._dynamicSkills).forEach(tierKey => {
+      (state._dynamicSkills[tierKey] || []).forEach(text => {
+        addSkill(tierKey);
+        const body = document.getElementById(`tierBody_${tierKey}`);
+        const rows = body.querySelectorAll('.skill-row');
+        const nameEl = rows[rows.length - 1].querySelector('.skill-name');
+        if (nameEl) nameEl.textContent = text;
+      });
+    });
+  }
+  if (state._recommendation) {
+    const radio = document.querySelector(`input[name="recommendation"][value="${state._recommendation}"]`);
+    if (radio) { radio.checked = true; radio.closest('.rec-option')?.classList.add('selected'); }
+  }
+  // Restore override
+  const ov = state._override || null;
+  if (!ov) { // try inferring from fields
+    if (state['overrideCheck'] === 'true' || document.getElementById('overrideCheck')?.checked) {
+      document.getElementById('overrideBody')?.classList.add('open');
+      document.getElementById('overrideBadge').textContent = 'Active';
+      document.getElementById('overrideBadge').style.color = '#e87770';
+    }
+  }
 }
 
-// Draft / state restore
-const _urlDraftId = new URLSearchParams(window.location.search).get('draft');
-if (_urlDraftId) {
-  setDraftId(_urlDraftId);
-  loadDraftFromUrl().then(() => {});
-} else {
-  clearDraftId();
+function restoreFormState() {
+  const raw = localStorage.getItem(SAVE_KEY);
+  if (!raw) return;
+  let state;
+  try { state = JSON.parse(raw); } catch(e) { return; }
+  restoreStateObj(state);
+  if (document.getElementById('currentTier')?.value) recalc();
+}
+
+function getCustomSkills() {
+  const cs = {};
+  ['T1','T2','T3','T4','T5','T6','T7'].forEach(k => {
+    const body = document.getElementById(`tierBody_${k}`);
+    if (!body) return;
+    const base = TIER_SKILLS[k].length;
+    const rows = body.querySelectorAll('.skill-row');
+    if (rows.length > base) {
+      cs[k] = [];
+      for (let i = base; i < rows.length; i++) cs[k].push(rows[i].querySelector('.skill-name')?.textContent || '');
+    }
+  });
+  return cs;
+}
+
+function autoSaveCustomSkills() { localStorage.setItem(SKILLS_KEY, JSON.stringify(getCustomSkills())); }
+
+function restoreCustomSkills() {
+  let customSkills = null, skillNames = null, kpiNames = null, perfNames = null, perfDescs = null;
+  const tmplRaw = localStorage.getItem(TEMPLATE_KEY);
+  if (tmplRaw) {
+    try {
+      const t = JSON.parse(tmplRaw);
+      customSkills = t.customSkills || null; skillNames = t.skillNames || null;
+      kpiNames = t.kpiNames || null; perfNames = t.perfNames || null; perfDescs = t.perfDescs || null;
+    } catch {}
+  }
+  if (!customSkills) {
+    const raw = localStorage.getItem(SKILLS_KEY);
+    try { if (raw) customSkills = JSON.parse(raw); } catch {}
+  }
+  if (customSkills) {
+    Object.keys(customSkills).forEach(tierKey => {
+      (customSkills[tierKey] || []).filter(Boolean).forEach(text => {
+        addSkill(tierKey);
+        const body = document.getElementById(`tierBody_${tierKey}`);
+        const rows = body.querySelectorAll('.skill-row');
+        const nameEl = rows[rows.length - 1].querySelector('.skill-name');
+        if (nameEl) { nameEl.textContent = text; nameEl.contentEditable = 'false'; }
+      });
+    });
+  }
+  if (skillNames) { Object.keys(skillNames).forEach(key => { const el = document.getElementById(`skillName_${key}`); if (el) el.textContent = skillNames[key]; }); }
+  if (kpiNames) {
+    Object.keys(kpiNames).forEach(id => {
+      if (id.endsWith('_sub')) { const el = document.getElementById(`kpiSub_${id.replace('_sub','')}`); if (el) el.textContent = kpiNames[id]; }
+      else { const el = document.getElementById(`kpiName_${id}`); if (el) el.textContent = kpiNames[id]; }
+    });
+  }
+  if (perfNames) { Object.keys(perfNames).forEach(id => { const el = document.getElementById(`critName_${id}`); if (el) el.textContent = perfNames[id]; }); }
+  if (perfDescs) { Object.keys(perfDescs).forEach(id => { const el = document.getElementById(`critDesc_${id}`); if (el) el.textContent = perfDescs[id]; }); }
+}
+
+function saveTemplate(quiet = false) {
+  const template = { customSkills: getCustomSkills(), skillNames: {}, kpiNames: {}, perfNames: {}, perfDescs: {} };
+  ['T1','T2','T3','T4','T5','T6','T7'].forEach(k => {
+    const body = document.getElementById(`tierBody_${k}`);
+    if (!body) return;
+    const rows = body.querySelectorAll('.skill-row');
+    TIER_SKILLS[k].forEach((orig, i) => {
+      const current = rows[i]?.querySelector('.skill-name')?.textContent || '';
+      if (current && current !== orig) template.skillNames[`${k}_${i}`] = current;
+    });
+  });
+  KPIS.forEach(kpi => {
+    const nameEl = document.getElementById(`kpiName_${kpi.id}`);
+    const subEl  = document.getElementById(`kpiSub_${kpi.id}`);
+    const name = nameEl?.textContent || '', sub = subEl?.textContent || '';
+    if (name && name !== kpi.name) template.kpiNames[kpi.id] = name;
+    if (sub  && sub  !== kpi.sub)  template.kpiNames[`${kpi.id}_sub`] = sub;
+  });
+  PERF_CATS.forEach(cat => {
+    const nameEl = document.getElementById(`critName_${cat.id}`);
+    const descEl = document.getElementById(`critDesc_${cat.id}`);
+    const name = nameEl?.textContent || '', desc = descEl?.textContent || '';
+    if (name && name !== cat.name) template.perfNames[cat.id] = name;
+    if (desc && desc !== cat.desc) template.perfDescs[cat.id] = desc;
+  });
+  localStorage.setItem(TEMPLATE_KEY, JSON.stringify(template));
+  localStorage.setItem(SKILLS_KEY, JSON.stringify(template.customSkills));
+  if (!quiet) showToast('Template saved.', 'success');
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+
+(function init() {
+  // Initialize tier dropdown from TIERS_STANDARD
+  const tierSel = document.getElementById('currentTier');
+  const tierKeys = ['T1','T2','T3','T4','T5','T6','T7'];
+  const labels = ['Entry, Just Graduated','Solo Assisting','Crown &amp; Bridge','Multi-Temps, Surgery','Back-Office Lead','FD Coverage &amp; Trainer','Complex Tx, OM Coverage'];
+  tierSel.innerHTML = '<option value="">— Select tier —</option>' +
+    tierKeys.map((k, i) => `<option value="${k}">${k} — ${TIERS_STANDARD[k].rate} — ${labels[i]}</option>`).join('');
+
+  // Set today's date defaults
+  const today = new Date().toISOString().slice(0, 10);
+  ['reviewDate','submitDate','employeeSigDate'].forEach(id => {
+    const el = document.getElementById(id); if (el && !el.value) el.value = today;
+  });
+
+  // Render dynamic sections
+  renderKPIs();
+  renderPerf();
+  renderTierAccordion();
+  restoreCustomSkills();
+
+  // Restore saved form state
   restoreFormState();
-}
 
-// Auto-save on input changes
-document.querySelector('.main').addEventListener('input', saveFormState);
-document.querySelector('.main').addEventListener('change', saveFormState);
+  // Auto-save on input
+  document.addEventListener('input', e => {
+    if (e.target.closest('.main, .submit-section')) saveFormState();
+  });
+  document.addEventListener('change', e => {
+    if (e.target.closest('.main, .submit-section')) saveFormState();
+  });
+
+  // Auto-save label edits on blur
+  document.addEventListener('focusout', e => {
+    if (e.target.hasAttribute('data-editable')) saveTemplate(true);
+  });
+
+  // Show nav buttons if auth token present
+  const jwt = getAuthJwt();
+  if (jwt) {
+    document.getElementById('backToHomeBtn').style.display = 'inline-flex';
+    document.getElementById('backToRecordsBtn').style.display = 'inline-flex';
+    document.getElementById('headerSaveDraftBtn').style.display = 'inline-block';
+  }
+
+  // Load draft from URL if present
+  loadDraftFromUrl();
+
+  recalc();
+})();
 </script>
 </body>
 </html>
