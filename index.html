@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DA 90-Day Review — Smile Haus</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -832,6 +834,181 @@ function buildSummaryText() {
   ].join('\n');
 }
 
+// ─── PDF / SNAPSHOT ──────────────────────────────────────────────────────────
+
+function buildFormSnapshotDoc() {
+  const f = id => document.getElementById(id)?.value || '—';
+  const daName = f('daName'), office = f('homeOffice'), tier = f('currentTier');
+  const startDate = f('startDate'), reviewDate = f('reviewDate'), reviewer = f('reviewerName');
+  const sig = f('reviewerSig');
+  const total = PERF_CATS.reduce((sum, cat) => sum + (perfScores[cat.id] || 0), 0);
+  const band = getBandLabel();
+
+  const catRows = PERF_CATS.map(cat => `
+    <tr>
+      <td style="padding:5px 10px;">${cat.label}</td>
+      <td style="padding:5px 10px;text-align:center;">${perfScores[cat.id] || 0}/5</td>
+    </tr>`).join('');
+
+  const tierData = TIERS[tier] || {};
+  const skillRows = (tierData.skills || []).map((skill, idx) => {
+    const st = skillStates[`${tier}_${idx}`];
+    const lbl = st === 'achieved' ? '✓ Achieved' : st === 'progressing' ? '⚡ Progressing' : st === 'not-yet' ? '✗ Not Yet' : '—';
+    const color = st === 'achieved' ? '#2d6a3f' : st === 'not-yet' ? '#c0392b' : '#888';
+    return `<tr><td style="padding:4px 10px 4px 20px;font-size:12px;">${skill}</td><td style="padding:4px 10px;text-align:center;font-size:12px;color:${color};font-weight:600;">${lbl}</td></tr>`;
+  }).join('');
+
+  const nextTierKey = tierData.next;
+  const nextTier = nextTierKey ? TIERS[nextTierKey] : null;
+  const goalRows = nextTier ? (nextTier.skills || []).map((skill, idx) => {
+    const checked = goalChecks[`${nextTierKey}_${idx}`];
+    return `<tr><td style="padding:4px 10px 4px 20px;font-size:12px;">${checked ? '☑' : '☐'} ${skill}</td></tr>`;
+  }).join('') : '<tr><td style="padding:8px 10px;font-size:12px;color:#888;font-style:italic;">DA is at highest tier — no advancement goals.</td></tr>';
+
+  const advCheck = document.getElementById('advanceCheck')?.checked;
+  const assessment = f('overallAssessment').replace(/_/g, ' ');
+
+  return `<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<title>DA 90-Day Review — ${daName} — ${reviewDate}</title>
+<style>body{font-family:Arial,sans-serif;color:#2A2E31;max-width:760px;margin:0 auto;padding:20px}table{width:100%;border-collapse:collapse}td{vertical-align:top}h2{font-family:Georgia,serif;font-weight:300;margin:24px 0 8px}.section-hdr{background:#877765;color:#fff;padding:10px 14px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-top:24px}</style>
+</head><body>
+<div style="background:#1a1a2e;color:#F2EFE8;padding:16px 20px;margin-bottom:24px">
+  <div style="font-family:Georgia,serif;font-size:18px;font-weight:300;">Smile Haus — DA 90-Day Review</div>
+  <div style="font-size:12px;opacity:0.6;margin-top:4px;">Submitted ${new Date().toLocaleString()}</div>
+</div>
+
+<div class="section-hdr">Review Information</div>
+<table>
+<tr><td style="padding:6px 10px;width:160px;font-weight:600;color:#877765;">DA Name</td><td style="padding:6px 10px;">${daName}</td><td style="padding:6px 10px;width:160px;font-weight:600;color:#877765;">Home Office</td><td style="padding:6px 10px;">${office}</td></tr>
+<tr style="background:#f5f3ef"><td style="padding:6px 10px;font-weight:600;color:#877765;">Current Tier</td><td style="padding:6px 10px;">${tier}</td><td style="padding:6px 10px;font-weight:600;color:#877765;">Start Date</td><td style="padding:6px 10px;">${startDate}</td></tr>
+<tr><td style="padding:6px 10px;font-weight:600;color:#877765;">Review Date</td><td style="padding:6px 10px;">${reviewDate}</td><td style="padding:6px 10px;font-weight:600;color:#877765;">Reviewer</td><td style="padding:6px 10px;">${reviewer}</td></tr>
+</table>
+
+<div class="section-hdr">Performance Scores — ${total}/30 (${band})</div>
+<table>
+<tr style="background:#2A2E31;color:#fff"><td style="padding:6px 10px;font-size:12px;font-weight:700;">Category</td><td style="padding:6px 10px;font-size:12px;font-weight:700;text-align:center;width:80px;">Score</td></tr>
+${catRows}
+</table>
+
+<div class="section-hdr">Current Tier Competencies — ${tier}</div>
+<table>
+<tr style="background:#2A2E31;color:#fff"><td style="padding:6px 10px;font-size:12px;font-weight:700;">Skill</td><td style="padding:6px 10px;font-size:12px;font-weight:700;text-align:center;width:120px;">Status</td></tr>
+${skillRows || '<tr><td colspan="2" style="padding:8px 10px;color:#888;font-style:italic;">No tier selected.</td></tr>'}
+</table>
+
+<div class="section-hdr">Advancement Goals${nextTierKey ? ` — Target: ${nextTierKey}` : ''}</div>
+<table>${goalRows}</table>
+
+<div class="section-hdr">Assessment &amp; Feedback</div>
+<table>
+<tr><td style="padding:6px 10px;font-weight:600;color:#877765;width:160px;">Overall Assessment</td><td style="padding:6px 10px;">${assessment}${advCheck ? ' · <strong>Advancement recommended</strong>' : ''}</td></tr>
+<tr style="background:#f5f3ef"><td style="padding:6px 10px;font-weight:600;color:#877765;">Strengths</td><td style="padding:6px 10px;">${f('strengths')}</td></tr>
+<tr><td style="padding:6px 10px;font-weight:600;color:#877765;">Areas for Improvement</td><td style="padding:6px 10px;">${f('improvement')}</td></tr>
+<tr style="background:#f5f3ef"><td style="padding:6px 10px;font-weight:600;color:#877765;">90-Day Goals</td><td style="padding:6px 10px;">${f('goals90')}</td></tr>
+</table>
+
+<div style="margin-top:24px;padding:12px 14px;border-top:2px solid #1a1a2e;font-size:12px;color:#877765;">
+  Reviewer Signature: <b>${sig}</b>
+</div>
+</body></html>`;
+}
+
+function buildFormSnapshot() {
+  const doc = buildFormSnapshotDoc();
+  try { return btoa(unescape(encodeURIComponent(doc))); }
+  catch(e) { return btoa(doc); }
+}
+
+async function generatePDF() {
+  if (!window.jspdf) throw new Error('jsPDF not loaded');
+  if (typeof html2canvas === 'undefined') throw new Error('html2canvas not loaded');
+
+  const { jsPDF } = window.jspdf;
+  const mainEl = document.querySelector('.main');
+
+  const savedScrollY = window.scrollY;
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+  let canvas;
+  try {
+    canvas = await html2canvas(mainEl, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: '#F2EFE8',
+      scrollX: 0,
+      scrollY: 0,
+      windowWidth: document.documentElement.clientWidth,
+      windowHeight: document.documentElement.clientHeight,
+      logging: false,
+      onclone: (doc) => {
+        // Un-sticky score bar
+        const bar = doc.querySelector('.score-summary');
+        if (bar) bar.style.position = 'relative';
+        // Hide modals
+        doc.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+        // Replace textarea with divs (html2canvas clips textarea content)
+        doc.querySelectorAll('textarea').forEach(ta => {
+          const liveTA = ta.id ? document.getElementById(ta.id) : null;
+          const value = liveTA ? liveTA.value : ta.value;
+          const cs = window.getComputedStyle(liveTA || ta);
+          const div = doc.createElement('div');
+          ['font-family','font-size','font-weight','line-height','color',
+           'padding','border','border-radius','background-color',
+           'width','box-sizing','word-break','word-wrap']
+            .forEach(p => { div.style[p] = cs.getPropertyValue(p); });
+          div.style.whiteSpace = 'pre-wrap';
+          div.style.wordBreak = 'break-word';
+          div.style.overflow = 'visible';
+          div.style.height = 'auto';
+          div.style.minHeight = '0';
+          div.textContent = value;
+          ta.parentNode.replaceChild(div, ta);
+        });
+        // Replace text/date inputs with divs
+        doc.querySelectorAll('input[type=text], input[type=date]').forEach(inp => {
+          const liveInp = inp.id ? document.getElementById(inp.id) : null;
+          const value = liveInp ? liveInp.value : inp.value;
+          if (!value) return;
+          const cs = window.getComputedStyle(liveInp || inp);
+          const div = doc.createElement('div');
+          ['font-family','font-size','font-weight','line-height','color',
+           'padding','border','border-radius','background-color','width','box-sizing']
+            .forEach(p => { div.style[p] = cs.getPropertyValue(p); });
+          div.style.overflow = 'visible';
+          div.style.height = 'auto';
+          div.style.whiteSpace = 'nowrap';
+          div.textContent = value;
+          inp.parentNode.replaceChild(div, inp);
+        });
+      },
+    });
+  } finally {
+    window.scrollTo({ top: savedScrollY, behavior: 'instant' });
+  }
+
+  const imgData = canvas.toDataURL('image/jpeg', 0.93);
+  const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  const pdfW = pdf.internal.pageSize.getWidth();
+  const pdfH = pdf.internal.pageSize.getHeight();
+  const imgW = pdfW;
+  const imgH = (canvas.height * imgW) / canvas.width;
+
+  let yPos = 0;
+  pdf.addImage(imgData, 'JPEG', 0, 0, imgW, imgH);
+  while (yPos + pdfH < imgH) {
+    yPos += pdfH;
+    pdf.addPage();
+    pdf.addImage(imgData, 'JPEG', 0, -yPos, imgW, imgH);
+  }
+
+  return pdf.output('datauristring').split(',')[1];
+}
+
+// ─── SUBMIT ──────────────────────────────────────────────────────────────────
+
 async function handleSubmit() {
   const daName = document.getElementById('daName').value.trim();
   const office = document.getElementById('homeOffice').value;
@@ -844,29 +1021,46 @@ async function handleSubmit() {
     showToast('Fill in DA Name, Office, Tier, and Reviewer Signature before submitting.', 'error'); return;
   }
 
+  if (!window.jspdf) { showToast('jsPDF library not loaded — check internet connection.', 'error'); return; }
+  if (typeof html2canvas === 'undefined') { showToast('html2canvas not loaded — check internet connection.', 'error'); return; }
+
   const cfg = getConfig();
   if (!cfg.workerUrl) { showToast('Worker URL not configured. Contact IT.', 'error'); return; }
 
   const btn = document.getElementById('submitBtn');
-  btn.disabled = true; btn.textContent = 'Submitting…';
+  btn.disabled = true;
 
   const total = PERF_CATS.reduce((sum, cat) => sum + (perfScores[cat.id] || 0), 0);
   const bandLabel = getBandLabel();
   const summary = buildSummaryText();
-
-  const taskName = `DA 90-Day Review — ${daName} — ${office} — ${reviewDate}`;
-  const taskBody = JSON.stringify({
-    name: taskName,
-    description: summary,
-    priority: 2,
-    custom_fields: [],
-  });
-
-  const jwt = getAuthJwt();
-  const headers = { 'Content-Type': 'application/json' };
-  if (jwt) headers['Authorization'] = 'Bearer ' + jwt;
+  let emailOk = false, clickupOk = false;
 
   try {
+    // Generate PDF, fall back to HTML snapshot
+    btn.textContent = 'Generating PDF…';
+    let formPdfB64 = null, formHtmlB64 = null, ext = 'html';
+    try {
+      formPdfB64 = await generatePDF();
+      ext = 'pdf';
+    } catch(e) {
+      console.warn('PDF generation failed, using HTML snapshot:', e);
+      formHtmlB64 = buildFormSnapshot();
+    }
+
+    btn.textContent = 'Submitting…';
+
+    const taskName = `DA 90-Day Review — ${daName} — ${office} — ${reviewDate}`;
+    const taskBody = JSON.stringify({
+      name: taskName,
+      description: summary,
+      priority: 2,
+      custom_fields: [],
+    });
+
+    const jwt = getAuthJwt();
+    const headers = { 'Content-Type': 'application/json' };
+    if (jwt) headers['Authorization'] = 'Bearer ' + jwt;
+
     const res = await fetch(cfg.workerUrl, {
       method: 'POST',
       headers,
@@ -883,6 +1077,9 @@ async function handleSubmit() {
         new_rate: 'N/A',
         reviewer: reviewer || sig,
         summary,
+        form_pdf_b64:  formPdfB64,
+        form_html_b64: formHtmlB64,
+        form_filename: `DA_90Day_Review_${daName.replace(/\s+/g,'_')}_${reviewDate}.${ext}`,
         form_type: 'da_90day',
         form_state: collectFormState(),
         draft_id: getDraftId() || undefined,
@@ -891,10 +1088,11 @@ async function handleSubmit() {
 
     if (res.ok) {
       const data = await res.json();
+      clickupOk = !!data.clickup_ok;
+      emailOk   = !!data.email_ok;
+      if (data.errors?.length) console.warn('Worker errors:', data.errors);
       clearDraftId();
       showDraftNote('');
-      const clickupOk = !!data.clickup_ok;
-      showToast(clickupOk ? 'Review submitted — ClickUp task created ✓' : 'Submitted but ClickUp task may have failed — check console', clickupOk ? 'success' : 'error');
     } else {
       const errText = await res.text().catch(() => res.status);
       console.error('Worker responded', res.status, errText);
@@ -906,6 +1104,15 @@ async function handleSubmit() {
   }
 
   btn.disabled = false; btn.textContent = 'Submit for Approval';
+
+  if (clickupOk || emailOk) {
+    const parts = [];
+    if (clickupOk) parts.push('ClickUp task created ✓');
+    else parts.push('ClickUp: failed — check console');
+    if (emailOk) parts.push('Email sent ✓');
+    else parts.push('Email pending');
+    showToast(parts.join('  ·  '), clickupOk ? 'success' : 'error');
+  }
 }
 
 // ─── RESET ────────────────────────────────────────────────────────────────────
