@@ -1567,8 +1567,15 @@ async function testWorker() {
 const FORM_PIN = 'smilehaus2024';
 
 function toggleLock() {
-  if (formLocked) { unlockForm(); showToast('Form unlocked — all fields and score buttons are active.', 'success'); }
-  else { showToast('Form is in edit mode — all fields and score buttons are active.', 'success'); }
+  if (formLocked) {
+    openPinModal(() => {
+      unlockForm();
+      showToast('Form unlocked — all fields and score buttons are active.', 'success');
+    });
+  } else {
+    lockForm();
+    showToast('Form locked.', 'success');
+  }
 }
 function getFormFields() {
   return document.querySelectorAll('.main input, .main select, .main textarea, .submit-section input, button.score-btn, button.skill-btn, button.pass-all-btn, button.fail-all-btn, button.tier-expand-btn, #submitBtn');
@@ -1883,6 +1890,9 @@ function saveTemplate(quiet = false) {
   loadDraftFromUrl();
 
   recalc();
+
+  // Start locked — PIN required to edit
+  lockForm();
 })();
 </script>
 </body>
